@@ -12,7 +12,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-[#f8f9fa] text-[#333] p-2.5 px-5 font-sans border-t-2 border-[#e9ecef] relative z-[60]">
+    <footer className="bg-[#f8f9fa] text-[#333] p-2.5 px-5 font-sans border-t-2 border-[#e9ecef] relative z-[40]">
       <div className="max-w-[1200px] mx-auto w-full px-5">
         {/* Top Brand Section */}
         <div className="w-full mb-10">
