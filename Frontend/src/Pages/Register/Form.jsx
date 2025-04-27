@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Form = () => {
+  const apiURL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
 
   const [userData, setuserData] = useState({
@@ -22,8 +23,9 @@ const Form = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:3000/usersapi/adduser", userData)
+      .post(`${apiURL}/usersapi/adduser`, userData)
       .then((res) => {
+        console.log(res.data);
         navigate("/login");
       });
   };

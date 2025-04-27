@@ -1,23 +1,4 @@
-.navbar-container {
-    width: 100%;
-    font-family: Arial, sans-serif;
-    position: relative;
-}
 
-/* Top bar styling */
-.top-bar {
-    background:  linear-gradient(135deg, #3aa560 50%, #b7e66c 90%);
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 20px;
-}
-
-.social-icons {
-    display: flex;
-    gap:15px;
-
-}
 
 .social-icon {
     color: white;

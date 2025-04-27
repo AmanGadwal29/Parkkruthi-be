@@ -18,9 +18,9 @@ const Footer = () => {
         <div className="footer-brand w-full">
           <p className="flex gap-20 items-center">
             <img
-              src="./logo1.png"
+              src="./logo1.jpg"
               alt="Urvann Logo"
-              className="footer-logo h-32 "
+              className="footer-logo h-40 mix-blend-multiply"
             />
             <span>
               {" "}

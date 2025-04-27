@@ -22,14 +22,14 @@ function DropdownNav({ setActiveDropdown, activeDropdown, isMenuOpen }) {
 
   const categories = {
     Plants: {
-      "Flower Plants": { path: "/flower-plants" },
-      "Indoor Plants": { path: "/indoor-plants" },
-      "Potted Plants": { path: "/potted-plants" },
-      "Special Plants": { path: "/special-plants" },
+      "Flower Plants": { path: "/plants/Flower Plants" },
+      "Indoor Plants": { path: "/plants/Indoor Plants" },
+      "Potted Plants": { path: "/plants/Potted Plants" },
+      "Special Plants": { path: "/plants/Special Plants" },
     },
     Pots: {
-      "Plastic Pots": { path: "/plastic" },
-      "Mud Pots": { path: "/mud" },
+      "Plastic Pots": { path: "/pots/Plastic Pot" },
+      "Mud Pots": { path: "/pots/Mud Pot" },
     },
     "Soil & More": {},
     "Home Decor Plants": {},

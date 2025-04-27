@@ -13,8 +13,8 @@ app.use(express.json());
 app.use(cors());
 app.use("/adminsapi", adminRouter);
 app.use("/usersapi", userRouter);
-app.use("/plantsapi", plantsRouter);
-app.use("/potsapi", potsRouter);
+app.use("/plants", plantsRouter);
+app.use("/pots", potsRouter);
 
 //! Database Connection------------------------------
 const connectDb = async () => {

@@ -18,13 +18,13 @@ const {
 router.post("/addplant", adminAccess, addPlants);
 
 //!SHOW PLANTS------------------------------
-router.get("/showplants", showPlants);
+router.get("/", showPlants);
 
 //!SHOW CATEGORY PLANTS------------------------------
-router.get("/showplants/:Category", categoryPlants);
+router.get("/:Category", categoryPlants);
 
 //!SHOW ONE PLANT------------------------------
-router.get("/showplant/:id", onePlant);
+router.get("/:id", onePlant);
 
 //!DELETE PLANT-----------------------------------
 

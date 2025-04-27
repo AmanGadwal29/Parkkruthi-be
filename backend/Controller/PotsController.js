@@ -13,7 +13,7 @@ exports.showPots = async (req, res) => {
 
 exports.categoryPots = async (req, res) => {
   let payload = await PotsSchema.find({
-    Category: `${req.params.Category} Pot`,
+    Category: `${req.params.Category}`,
   });
   res
     .status(201)

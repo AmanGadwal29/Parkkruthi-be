@@ -16,10 +16,10 @@ const {
 // ! Routers----------------------------
 router.post("/addpot", adminAccess, addPots);
 
-router.get("/showpots", showPots);
+router.get("/", showPots);
 
-router.get("/showpots/:Category", categoryPots);
+router.get("/:Category", categoryPots);
 
-router.get("/showpot/:id", onePot);
+router.get("/:id", onePot);
 
 module.exports = router;

@@ -46,7 +46,8 @@ const StyledWrapper = styled.div`
     overflow: hidden;
     z-index: 2;
     transition-duration: 0.3s;
-    margin-left: 0.75rem;
+    margin-left: .6rem;
+    margin-right: .6rem;
     
   }
 
@@ -67,7 +68,7 @@ const StyledWrapper = styled.div`
   }
 
   .bookmarkBtn:hover .IconContainer {
-    width: 150px;
+    width: 100%;
     transition-duration: 0.3s;
   }
 
@@ -79,7 +80,7 @@ const StyledWrapper = styled.div`
   }
 
   .bookmarkBtn:active {
-    transform: scale(1.5);
+    transform: scale(1.1);
     transition-duration: 0.3s;
   }
 `;

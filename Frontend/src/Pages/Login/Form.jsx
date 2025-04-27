@@ -6,18 +6,18 @@ const Form = () => {
   const [user, setUser] = useState({ Name: "", Password: "" });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
+  const apiURL = import.meta.env.VITE_API_URL;
 
   const submitHandler = (e) => {
     e.preventDefault();
-    axios.post("http://localhost:3000/usersapi/userlogin", user).then((res) => {
+    axios.post(`${apiURL}/usersapi/userlogin`, user).then((res) => {
       if (res.data.success) {
-        localStorage.setItem(
-          "user",
-          JSON.stringify({ role: "user", name: user.Name })
-        );
+        localStorage.setItem("user", JSON.stringify({ role: "user", name: user.Name }));
+        localStorage.setItem("isAuthenticated", true); // <<< Add this
         setIsAuthenticated(true);
-        navigate("/");
+        navigate("/", { state: { isAuthenticated: true } });
       }
+      
     });
   };
 
