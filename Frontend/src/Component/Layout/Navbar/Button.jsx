@@ -1,38 +1,15 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
 
-const Button = ({ text, color }) => {
+const Button = ({ text, color = "#3AA560", onClick,}) => {
   return (
-    <StyledWrapper color={color}>
-      <button className="button">
-        {text}
-      </button>
-    </StyledWrapper>
+    <button
+      onClick={onClick}
+      className={`font-semibold relative px-5 py-2 rounded-lg border-none text-white cursor-pointer transition-transform duration-200 active:scale-95 font-poppins`}
+      style={{ backgroundColor: color }}
+    >
+      {text}
+    </button>
   );
-}
-
-const StyledWrapper = styled.div`
-  .button {
-    font-weight: 600;
-    position: relative;
-    padding: 7px 22px;
-    border-radius: 6px;
-    border: none;
-    color: #fff;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-family: "Poppins", sans-serif;
-    background-color: ${({ color }) => color || '#3AA560'}; /* Dynamic background color */
-  }
-
-  .button:active {
-    transform: scale(0.96);
-  }
-
-
-  .button:hover {
-    background-color: ${({ color }) => color ? '#db0404' : '#30824c'};
-  }
-`;
+};
 
 export default Button;

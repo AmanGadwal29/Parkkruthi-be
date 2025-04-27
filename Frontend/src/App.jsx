@@ -15,13 +15,16 @@ import UserProtectedRoute from "./Utils/UserProtectedRoute.jsx";
 import AdminProtectedRoute from "./Utils/AdminPortectedRoute.jsx";
 import AdminDashboard from "./Pages/Admin/AdminDashboard.jsx";
 import CardsHomePage from "./Plants/CardsHomePage.jsx";
+import ScrollToTop from "./Utils/ScrollToTop.jsx";
 
 function App() {
   return (
     <>
+    <ScrollToTop/>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/:category" element={<CardsHomePage />} />
         <Route path="/:category/:type" element={<CardsHomePage />} />
         <Route path="/product/:details" element={<ProductDetails />} />
         <Route path="/login" element={<Login />} />

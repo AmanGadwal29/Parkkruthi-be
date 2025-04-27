@@ -31,6 +31,7 @@ const Navbar = () => {
       const parsedUser = JSON.parse(storedUser);
       setUserName(parsedUser.name);
     }
+    
   }, []);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -49,7 +50,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
-    localStorage.removeItem("isAuthenticated"); // <<< Add this also
+    localStorage.removeItem("isAuthenticated");
     setUserName("");
     navigate("/login");
   };
@@ -105,8 +106,8 @@ const Navbar = () => {
           <div>
             {isAuthenticated && (
               <h1 className="text-xl font-bold text-white mr-10">
-                Welcome back,{" "}
-                <span className="text-yellow-300">{userName}</span>
+                Welcome back{userName ? ', ' : ' '}
+                <span className="text-yellow-300">{userName ? userName[0].toUpperCase() + userName.slice(1) : ""}</span>
                 <span className="absolute animate-bounce mx-2">!</span>
               </h1>
             )}
@@ -135,17 +136,17 @@ const Navbar = () => {
           </div>
 
           <div className="nav-actions ">
-            <Link to="/help" className="help-btn">
-              <Button text="HELP" />
+            <Link to="/help" className='font-semibold relative px-4 py-2 rounded-lg border-none transition-all hover:bg-[#2a7845] bg-[#3AA560] text-white cursor-pointer  duration-200 active:scale-95 font-poppins'>
+              Help
             </Link>
 
             {isAuthenticated ? (
-              <button onClick={handleLogout} className="logout-btn">
-                <Button text="LOGOUT" color="red" />
-              </button>
-            ) : (
-              <Link to="/login" className="login-btn">
-                <Button text="LOGIN" />
+              <button
+              onClick={handleLogout}
+              className='font-semibold relative px-5 py-2 rounded-lg border-none bg-red-400 text-white cursor-pointer transition-transform duration-200 active:scale-95 font-poppins'
+            >LOGOUT</button>) : (
+              <Link to="/login" className='font-semibold relative px-4 py-2 rounded-lg border-none transition-all hover:bg-[#2a7845] bg-[#3AA560] text-white cursor-pointer  duration-200 active:scale-95 font-poppins'>
+                Login
               </Link>
             )}
 

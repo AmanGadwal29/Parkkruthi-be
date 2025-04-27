@@ -13,16 +13,24 @@ const CardsHomePage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchCategories = async () => {  
+    const fetchCategories = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(
-          `https://parkkruthi.onrender.com/${category}/${type}`
-        );
+        let url = "";
+  
+        if (type) {
+          url = `https://parkkruthi.onrender.com/${category}/${type}`;
+        } else {
+          url = `https://parkkruthi.onrender.com/${category}`;
+        }
+  
+        const response = await axios.get(url);
+  
         if (response.data.success) {
-          const filteredData = response.data.payload.filter(
-            (cat) => cat.Category === type
-          );
+          const filteredData = type
+            ? response.data.payload.filter((cat) => cat.Category === type)
+            : response.data.payload;
+  
           setCategories(filteredData);
         } else {
           setError("Failed to load categories");
@@ -35,9 +43,10 @@ const CardsHomePage = () => {
         setLoading(false);
       }
     };
-
+  
     fetchCategories();
   }, [category, type]);
+  
 
   return (
     <Layout>
@@ -45,7 +54,7 @@ const CardsHomePage = () => {
         <div className="lg:flex">
           <Sidebar />
           <div className="w-full h-[100%]">
-            <h1 className="text-3xl font-bold capitalize p-5">{type}</h1>
+            <h1 className="text-3xl font-bold capitalize p-5 pl-16 border-b-[1px] border-gray-300">{type ? type : `All  ${category}`}</h1>
             <div className="flex-1 flex flex-col items-center justify-center ">
               <CardsComponent
                 Categories={Categories}

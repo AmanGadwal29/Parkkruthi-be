@@ -16,6 +16,11 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+
 @plugin "flyonui";
 @source "./node_modules/flyonui/flyonui.js";
 
