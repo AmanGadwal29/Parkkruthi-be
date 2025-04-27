@@ -13,6 +13,10 @@ const CardsComponent = ({ Categories, loading, error }) => {
     setDisplayCategories(currentItems);
   }, [currentPage, Categories]);
 
+  if (loading) {
+    return <Shimmer />;
+  }
+
   if (Categories.length === 0) {
     return <div className="flex justify-center items-center w-full h-64 bg-inherit">
     <div className="text-center px-4 py-6">
@@ -20,10 +24,6 @@ const CardsComponent = ({ Categories, loading, error }) => {
       <p className="mt-4 text-lg text-gray-400">Sorry, the item you're looking for is currently out of stock or unavailable.</p>
     </div>
   </div>;
-  }
-
-  if (loading) {
-    return <Shimmer />;
   }
 
   if (error) {
