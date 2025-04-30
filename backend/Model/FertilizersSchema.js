@@ -1,7 +1,7 @@
 const { Schema, model } = require("mongoose");
 
 //! Schema-------------------------------
-PotsSchema = new Schema({
+FertilizersSchema = new Schema({
   Image: { type: String },
   Title: { type: String },
   Description: { type: String },
@@ -10,4 +10,4 @@ PotsSchema = new Schema({
   Category: { type: String },
 });
 
-module.exports = model("Pots", PotsSchema, "Pots");
+module.exports = model("Fertilizers", FertilizersSchema, "Fertilizers");

@@ -1,11 +1,10 @@
 const { Router } = require("express");
-const PlantsSchema = require("../Model/PlantsSchema");
 const router = Router();
-const { adminAccess } = require("../ManageAccess/adminAuth");
-const { userAccess } = require("../ManageAccess/userAuth");
-const adminOrUserAccess = require("../ManageAccess/adminUserAccess");
 
-//! Methods-----------------------------
+//! Admin Auth Middleware-----------------------------
+const { adminAccess } = require("../ManageAccess/adminAuth");
+
+//! Route Handlers-----------------------------
 const {
   addPlants,
   showPlants,
@@ -14,22 +13,14 @@ const {
   deletePlant,
 } = require("../Controller/PlantsController");
 
-//!ADD PLANTS------------------------------
-router.post("/addplant", adminAccess, addPlants);
+//! Routes-----------------------------
+//? All Plants
+router.route("/").post(adminAccess, addPlants).get(showPlants);
 
-//!SHOW PLANTS------------------------------
-router.get("/showplants", showPlants);
+//? Plants Category
+router.route("/:category").get(categoryPlants);
 
-//!SHOW CATEGORY PLANTS------------------------------
-router.get("/showplants/:Category", categoryPlants);
-
-//!SHOW ONE PLANT------------------------------
-router.get("/showplant/:id", onePlant);
-
-//!DELETE PLANT-----------------------------------
-
-//!SHOW ONE PLANT------------------------------
-// router.delete("/deleteplant/:id", adminAccess, deletePlant);
-router.post("/deleteplant/:id", adminAccess, deletePlant);
+//? Plants id
+router.route("/plant/:id").get(onePlant).post(adminAccess, deletePlant);
 
 module.exports = router;

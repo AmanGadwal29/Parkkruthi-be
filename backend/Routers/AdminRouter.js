@@ -1,8 +1,14 @@
 const { Router } = require("express");
-const AdminSchema = require("../Model/AdminSchema");
 const router = Router();
+
+//! Router Handlers----------------------------
 const { addAdmin, adminLogin } = require("../Controller/AdminController");
-router.post("/addadmin", addAdmin);
-router.post("/adminlogin", adminLogin);
+
+//! Routers----------------------------
+//? Sign Up
+router.post("/signup", addAdmin);
+
+//? Log In
+router.post("/login", adminLogin);
 
 module.exports = router;

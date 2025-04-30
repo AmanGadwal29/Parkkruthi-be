@@ -1,26 +1,38 @@
 const PotsSchema = require("../Model/PotsSchema");
 
+//! Add Pot Handler Function----------------------------------
 exports.addPots = async (req, res) => {
   let payload = req.body;
   await PotsSchema.create(payload);
-  res.status(201).json({ success: true, message: "Pot Added", payload });
+  res.status(201).json({ status: "Success", data: { payload } });
 };
 
+//! Show All Pots Handler Function----------------------------------
 exports.showPots = async (req, res) => {
   let payload = await PotsSchema.find({});
-  res.status(201).json({ success: true, message: "All Pots", payload });
+  res
+    .status(201)
+    .json({ status: "Success", resources: payload.length, data: { payload } });
 };
 
+//! Show All Pots of Same Category Handler Function----------------------------------
 exports.categoryPots = async (req, res) => {
   let payload = await PotsSchema.find({
-    Category: `${req.params.Category} Pot`,
+    Category: `${req.params.category} Pot`,
   });
   res
     .status(201)
-    .json({ success: true, message: "Showing category plants", payload });
+    .json({ status: "Success", resources: payload.length, data: { payload } });
 };
 
+//! Show One Pot Handler Function----------------------------------
 exports.onePot = async (req, res) => {
   const payload = await PotsSchema.findOne({ _id: req.params.id });
-  res.status(201).json({ success: true, message: "One Pot", payload });
+  res.status(201).json({ status: "Success", data: { payload } });
+};
+
+//! Delete One Pot Handler Function----------------------------------
+exports.deletePot = async (req, res) => {
+  let payload = await PotsSchema.deleteOne({ _id: req.params.id });
+  res.status(201).json({ status: "Success", data: { payload } });
 };

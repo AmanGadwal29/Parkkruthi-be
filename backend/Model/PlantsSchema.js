@@ -1,5 +1,6 @@
 const { Schema, model } = require("mongoose");
 
+//! Schema-------------------------------
 PlantsSchema = new Schema({
   Image: { type: String },
   Title: { type: String },

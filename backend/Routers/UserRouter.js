@@ -1,8 +1,14 @@
 const { Router } = require("express");
-const UserSchema = require("../Model/UserSchema");
 const router = Router();
+
+//! Route Handlers-----------------------------
 const { addUser, userLogin } = require("../Controller/UserController");
-router.post("/adduser", addUser);
-router.post("/userlogin", userLogin);
+
+//! Routes-----------------------------
+//? Sign Up
+router.post("/signup", addUser);
+
+//? Log In
+router.post("/login", userLogin);
 
 module.exports = router;
