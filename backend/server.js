@@ -1,7 +1,9 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const { PORT, URL } = require("./config");
+require('dotenv').config();
+const { PORT, URL } = process.env;
+
 
 //! CORS Connection ------------------------------
 const cors = require("cors");
@@ -14,17 +16,12 @@ app.use(cors());
 const adminRouter = require("./Routers/AdminRouter");
 const userRouter = require("./Routers/UserRouter");
 const productsRouter = require("./Routers/ProductsRouter");
-const cors = require("cors");
-
-//! Middleware  ----------------------------------------
-app.use(express.json());
-app.use(cors());
 
 //! Dynamically handle category-based routing
-const validCategories = ["plants", "pots", "fertilizers"]; // Add more categories here
+const validCategories = ["plants", "pots", "fertilizers"]; 
 
 validCategories.forEach((category) => {
-  app.use(`/${category}`, productsRouter); // Dynamically using the same router for all categories
+  app.use(`/${category}`, productsRouter);
 });
 
 // Admin and User specific routes

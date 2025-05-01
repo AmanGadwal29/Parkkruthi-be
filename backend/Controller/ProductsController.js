@@ -21,7 +21,9 @@ exports.addItem = async (req, res) => {
 
 exports.getAllItems = async (req, res) => {
   try {
-    const { category } = req.params;
+    // Get the category from the base URL (e.g., /plants)
+    const category = req.baseUrl.split('/')[1];
+    
     if (!validCategories.includes(category)) {
       return res.status(400).json({ error: "Invalid category" });
     }

@@ -17,10 +17,10 @@ const getModel = (category) => {
   if (modelCache[modelName]) return modelCache[modelName];
 
   const schema = new Schema(baseSchemaFields);
-  const model = model(modelName, schema, modelName);
-  modelCache[modelName] = model;
+  const ProductModel = model(modelName, schema, modelName);
+  modelCache[modelName] = ProductModel;
 
-  return model;
+  return ProductModel;
 };
 
 module.exports = getModel;
