@@ -2,6 +2,15 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const { PORT, URL } = require("./config");
+
+//! CORS Connection ------------------------------
+const cors = require("cors");
+
+//!Midllesware ------------------------------
+app.use(express.json());
+app.use(cors());
+
+//! Routers ------------------------------
 const adminRouter = require("./Routers/AdminRouter");
 const userRouter = require("./Routers/UserRouter");
 const productsRouter = require("./Routers/ProductsRouter");
@@ -22,7 +31,7 @@ validCategories.forEach((category) => {
 app.use("/adminsapi", adminRouter);
 app.use("/usersapi", userRouter);
 
-//! Database Connection------------------------------
+//! Database Connection ------------------------------
 const connectDb = async () => {
   try {
     await mongoose.connect(URL);
@@ -33,11 +42,11 @@ const connectDb = async () => {
 };
 connectDb();
 
-//! Routing-------------------------------------------
 app.get("/", (req, res) => {
-  res.send("Hello");
+  res.send("Parkkruthi");
 });
 
+//! Starting Server ------------------------------
 app.listen(PORT, (err) => {
   if (err) throw err;
   console.log(`Server is running at http://localhost:${PORT}`);
