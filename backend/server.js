@@ -1,51 +1,35 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-require('dotenv').config();
-const { PORT, URL } = process.env;
-
-
-//! CORS Connection ------------------------------
-const cors = require("cors");
-
-//!Midllesware ------------------------------
-app.use(express.json());
-app.use(cors());
-
-//! Routers ------------------------------
+const { PORT, URL } = require("./config");
 const adminRouter = require("./Routers/AdminRouter");
 const userRouter = require("./Routers/UserRouter");
-const productsRouter = require("./Routers/ProductsRouter");
+const plantsRouter = require("./Routers/PlantsRouter");
+const potsRouter = require("./Routers/PotsRouter");
+const fertilizersRouter = require("./Routers/FertilizersRouter");
+const cors = require("cors");
+//!Midllesware  ----------------------------------------
+app.use(express.json());
 
-//! Dynamically handle category-based routing
-const validCategories = ["plants", "pots", "fertilizers"]; 
-
-validCategories.forEach((category) => {
-  app.use(`/${category}`, productsRouter);
-});
-
-// Admin and User specific routes
+app.use(cors());
 app.use("/adminsapi", adminRouter);
 app.use("/usersapi", userRouter);
+app.use("/plants", plantsRouter);
+app.use("/pots", potsRouter);
+app.use("/fertilizers", fertilizersRouter);
 
-//! Database Connection ------------------------------
+//! Database Connection------------------------------
 const connectDb = async () => {
-  try {
-    await mongoose.connect(URL);
-    console.log("Database connected successfully.");
-  } catch (error) {
-    console.error("Error connecting to the database: ", error);
-  }
+  let prakrithiDb = await mongoose.connect(URL);
 };
 connectDb();
 
-//! Routing-------------------------------------------
+//!Routing-------------------------------------------
 app.get("/", (req, res) => {
-  res.send("Parkkruthi");
+  res.send("Hello");
 });
 
-//! Starting Server ------------------------------
 app.listen(PORT, (err) => {
   if (err) throw err;
-  console.log(`Server is running at http://localhost:${PORT}`);
+  console.log(`server is running at http://localhost:${PORT}`);
 });

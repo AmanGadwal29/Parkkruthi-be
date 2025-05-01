@@ -13,7 +13,7 @@ const {
   deletePlant,
 } = require("../Controller/PlantsController");
 
-//! Routes-----------------------------
+
 //? All Plants
 router.route("/").post(adminAccess, addPlants).get(showPlants);
 
@@ -26,10 +26,8 @@ router.route("/:category").get(categoryPlants);
 router.get("/:id", onePlant);
 
 //!DELETE PLANT-----------------------------------
-
-//!SHOW ONE PLANT------------------------------
 router.post("/deleteplant/:id", adminAccess, deletePlant);
 //? Plants id
-router.route("/plant/:id").get(onePlant).post(adminAccess, deletePlant);
+router.route("/:id").get(onePlant).post(adminAccess, deletePlant);
 
 module.exports = router;
