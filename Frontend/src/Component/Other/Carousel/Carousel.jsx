@@ -6,9 +6,9 @@ export default function Carousel() {
   const navigate = useNavigate();
 
   const images = [
-    { src: "caraousel1.avif", path: "/plants/Flower Plants" },
-    { src: "caraousel2.avif", path: "/plants" },
-    { src: "caraousel3.avif", path: "/plants/Indoor Plants" },
+    { src: "caraousel1.avif", path: "/browse/flowering-plants" },
+    { src: "caraousel2.avif", path: "/browse/plants" },
+    { src: "caraousel3.avif", path: "/browse/indoor-plants" },
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);

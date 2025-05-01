@@ -19,7 +19,6 @@ router.route("/").post(adminAccess, addFertilizers).get(showFertilizers);
 
 //? Fertilizers Category
 router.route("/:category").get(categoryFertilizers);
-router.route("/:id").get(oneFertilizer);
 
 //? Fertilizers id
 router
