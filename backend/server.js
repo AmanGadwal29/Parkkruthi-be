@@ -42,6 +42,7 @@ const connectDb = async () => {
 };
 connectDb();
 
+//! Routing-------------------------------------------
 app.get("/", (req, res) => {
   res.send("Parkkruthi");
 });
