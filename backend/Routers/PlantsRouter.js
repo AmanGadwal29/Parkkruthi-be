@@ -29,7 +29,6 @@ router.get("/:id", onePlant);
 //!DELETE PLANT-----------------------------------
 
 //!SHOW ONE PLANT------------------------------
-// router.delete("/deleteplant/:id", adminAccess, deletePlant);
 router.post("/deleteplant/:id", adminAccess, deletePlant);
 
 module.exports = router;

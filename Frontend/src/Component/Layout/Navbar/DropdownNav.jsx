@@ -31,6 +31,10 @@ function DropdownNav({ setActiveDropdown, activeDropdown, isMenuOpen }) {
       "Plastic Pots": { path: "/pots/Plastic Pot" },
       "Mud Pots": { path: "/pots/Mud Pot" },
     },
+    Fertilizers: {
+      "Organic Fertilizers": { path: "/fertilizers/Organic Fertilizers" },
+      "Chemical Fertilizers": { path: "/fertilizers/Chemical Fertilizers" },
+    },
     "Soil & More": {},
     "Home Decor Plants": {},
     Seeds: {},

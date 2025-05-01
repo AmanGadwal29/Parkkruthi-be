@@ -4,30 +4,41 @@ const mongoose = require("mongoose");
 const { PORT, URL } = require("./config");
 const adminRouter = require("./Routers/AdminRouter");
 const userRouter = require("./Routers/UserRouter");
-const plantsRouter = require("./Routers/PlantsRouter");
-const potsRouter = require("./Routers/PotsRouter");
+const productsRouter = require("./Routers/ProductsRouter");
 const cors = require("cors");
-//!Midllesware  ----------------------------------------
-app.use(express.json());
 
+//! Middleware  ----------------------------------------
+app.use(express.json());
 app.use(cors());
+
+//! Dynamically handle category-based routing
+const validCategories = ["plants", "pots", "fertilizers"]; // Add more categories here
+
+validCategories.forEach((category) => {
+  app.use(`/${category}`, productsRouter); // Dynamically using the same router for all categories
+});
+
+// Admin and User specific routes
 app.use("/adminsapi", adminRouter);
 app.use("/usersapi", userRouter);
-app.use("/plants", plantsRouter);
-app.use("/pots", potsRouter);
 
 //! Database Connection------------------------------
 const connectDb = async () => {
-  let prakrithiDb = await mongoose.connect(URL);
+  try {
+    await mongoose.connect(URL);
+    console.log("Database connected successfully.");
+  } catch (error) {
+    console.error("Error connecting to the database: ", error);
+  }
 };
 connectDb();
 
-//!Routing-------------------------------------------
+//! Routing-------------------------------------------
 app.get("/", (req, res) => {
   res.send("Hello");
 });
 
 app.listen(PORT, (err) => {
   if (err) throw err;
-  console.log(`server is running at http://localhost:${PORT}`);
+  console.log(`Server is running at http://localhost:${PORT}`);
 });
