@@ -1,8 +1,13 @@
+const multer = require("multer");
 const { Router } = require("express");
 const router = Router({ mergeParams: true });
 
 //! Admin Auth Middleware -------------------------------------------
 const { adminAccess } = require("../ManageAccess/adminAuth");
+
+//! Image Insertion Configuration -------------------------------------------
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 //! Route Handlers -------------------------------------------
 const {
@@ -20,7 +25,7 @@ const {
 router
   .route("/")
   .get(showAllProducts)
-  .post(adminAccess, addProduct)
+  .post(adminAccess, upload.single("Image"), addProduct)
   .delete(adminAccess, deleteAllProducts);
 
 //? Products Category

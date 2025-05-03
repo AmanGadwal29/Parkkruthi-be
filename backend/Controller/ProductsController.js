@@ -26,6 +26,12 @@ exports.addProduct = async (req, res) => {
     await schema.create({
       ...payload,
       CategoryRoute: payload.Category.toLowerCase().replace(/\s+/g, ""),
+      Image: req.file
+        ? {
+            data: req.file.buffer,
+            contentType: req.file.mimetype,
+          }
+        : undefined,
     });
     res.status(201).json({ status: "Success", data: { payload } });
   } catch (err) {
@@ -85,7 +91,9 @@ exports.showOneProduct = async (req, res) => {
     const schema = getSchema(productType);
 
     const payload = await schema.findOne({ _id: id });
-    res.status(201).json({ status: "Success", data: { payload } });
+    !payload
+      ? res.status(404).json({ message: "Product not found" })
+      : res.status(201).json({ status: "Success", data: { payload } });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -98,6 +106,7 @@ exports.editProduct = async (req, res) => {
     const productType = req.params.productType;
     const id = req.params.id;
     const payload = req.body;
+    if (!payload) res.status(404).json({ message: "Product not found" });
 
     //Getting the Schema
     const schema = getSchema(productType);
@@ -137,11 +146,13 @@ exports.deleteOneProduct = async (req, res) => {
     const schema = getSchema(productType);
 
     const id = req.params.id;
-    const payload = await schema.deleteOne({ _id: id });
-    res.status(201).json({
-      status: "Success",
-      message: "Product removed successfully",
-    });
+    const deletePayload = await schema.deleteOne({ _id: id });
+    !deletePayload
+      ? res.status(404).json({ message: "Product not found" })
+      : res.status(201).json({
+          status: "Success",
+          message: "Product removed successfully",
+        });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

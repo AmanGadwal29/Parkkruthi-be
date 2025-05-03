@@ -7,9 +7,6 @@ const { PORT, URL } = require("./config");
 const adminRouter = require("./Routers/AdminRouter");
 const userRouter = require("./Routers/UserRouter");
 const productRouter = require("./Routers/ProductsRouter");
-// const plantsRouter = require("./Routers/PlantsRouter");
-// const potsRouter = require("./Routers/PotsRouter");
-// const fertilizersRouter = require("./Routers/FertilizersRouter");
 
 //! CORS Connection -------------------------------------------
 const cors = require("cors");
@@ -26,9 +23,6 @@ app.use("/api/v1/users", userRouter);
 
 //* Products
 app.use("/api/v1/products/:productType", productRouter);
-// app.use("/api/v1/plants", plantsRouter);
-// app.use("/api/v1/pots", potsRouter);
-// app.use("/api/v1/fertilizers", fertilizersRouter);
 
 //! Database Connection -------------------------------------------
 const connectDb = async () => {
