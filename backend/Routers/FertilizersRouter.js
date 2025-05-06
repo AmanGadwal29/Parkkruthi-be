@@ -1,10 +1,10 @@
 const { Router } = require("express");
 const router = Router();
 
-//! Admin Auth Middleware-----------------------------
+//! Admin Auth Middleware -------------------------------------------
 const { adminAccess } = require("../ManageAccess/adminAuth");
 
-//! Route Handlers-----------------------------
+//! Route Handlers -------------------------------------------
 const {
   addFertilizers,
   showFertilizers,
@@ -13,13 +13,12 @@ const {
   deleteFertilizer,
 } = require("../Controller/FertilizersController");
 
-//! Routes-----------------------------
+//! Routes -------------------------------------------
 //? All Fertilizers
 router.route("/").post(adminAccess, addFertilizers).get(showFertilizers);
 
 //? Fertilizers Category
 router.route("/:category").get(categoryFertilizers);
-router.route("/:id").get(oneFertilizer);
 
 //? Fertilizers id
 router

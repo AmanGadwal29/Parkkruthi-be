@@ -1,11 +1,10 @@
 const { Router } = require("express");
-const PotsSchema = require("../Model/PotsSchema");
 const router = Router();
-const { userAccess } = require("../ManageAccess/userAuth");
-const { adminAccess } = require("../ManageAccess/adminAuth");
-const adminOrUserAccess = require("../ManageAccess/adminUserAccess");
 
-//! Methods-----------------------------
+//! Admin Auth Middleware -------------------------------------------
+const { adminAccess } = require("../ManageAccess/adminAuth");
+
+//! Route Handlers -------------------------------------------
 const {
   addPots,
   showPots,
@@ -14,15 +13,14 @@ const {
   deletePot,
 } = require("../Controller/PotsController");
 
-// ! Routers----------------------------
-router.post("/addpot", adminAccess, addPots);
+//! Routes -------------------------------------------
+//? All Pots
+router.route("/").post(adminAccess, addPots).get(showPots);
 
-router.get("/", showPots);
+//? Pots Category
+router.route("/:category").get(categoryPots);
 
-router.get("/:Category", categoryPots);
+//? Pots id
+router.route("/Pot/:id").get(onePot).post(adminAccess, deletePot);
 
-router.get("/:id", onePot);
-
-router.post("/deletepot/:id", adminAccess, deletePot);
-
-module.exports = router; 
+module.exports = router;

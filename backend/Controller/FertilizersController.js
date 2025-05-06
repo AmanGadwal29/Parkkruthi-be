@@ -1,23 +1,23 @@
 const FertilizersSchema = require("../Model/FertilizersSchema");
 
-//! Add Fertilizer Handler Function----------------------------------
+//! Add Fertilizer Handler Function -------------------------------------------
 exports.addFertilizers = async (req, res) => {
-  let payload = req.body;
+  const payload = req.body;
   await FertilizersSchema.create(payload);
   res.status(201).json({ status: "Success", data: { payload } });
 };
 
-//! Show All Fertilizers Handler Function----------------------------------
+//! Show All Fertilizers Handler Function -------------------------------------------
 exports.showFertilizers = async (req, res) => {
-  let payload = await FertilizersSchema.find({});
+  const payload = await FertilizersSchema.find({});
   res
     .status(201)
     .json({ status: "Success", resources: payload.length, data: { payload } });
 };
 
-//! Show All Fertilizers of Same Category Handler Function----------------------------------
+//! Show All Fertilizers of Same Category Handler Function -------------------------------------------
 exports.categoryFertilizers = async (req, res) => {
-  let payload = await FertilizersSchema.find({
+  const payload = await FertilizersSchema.find({
     Category: `${req.params.category} Fertilizer`,
   });
   res
@@ -25,14 +25,16 @@ exports.categoryFertilizers = async (req, res) => {
     .json({ status: "Success", resources: payload.length, data: { payload } });
 };
 
-//! Show One Fertilizer Handler Function----------------------------------
+//! Show One Fertilizer Handler Function -------------------------------------------
 exports.oneFertilizer = async (req, res) => {
-  const payload = await FertilizersSchema.findOne({ _id: req.params.id });
+  const id = req.params.id;
+  const payload = await FertilizersSchema.findOne({ _id: id });
   res.status(201).json({ status: "Success", data: { payload } });
 };
 
-//! Delete One Fertilizer Handler Function----------------------------------
+//! Delete One Fertilizer Handler Function -------------------------------------------
 exports.deleteFertilizer = async (req, res) => {
-  let payload = await FertilizersSchema.deleteOne({ _id: req.params.id });
+  const id = req.params.id;
+  const payload = await FertilizersSchema.deleteOne({ _id: id });
   res.status(201).json({ status: "Success", data: { payload } });
 };
