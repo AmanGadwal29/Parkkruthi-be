@@ -55,6 +55,9 @@ exports.addProduct = async (req, res) => {
             contentType: req.file.mimetype,
           }
         : undefined,
+      ImageURL: req.file
+        ? `/api/v1/products/${productType}/images/id/${new mongoose.Types.ObjectId()}`
+        : null,
     });
     res.status(201).json({ status: "Success", data: { payload } });
   } catch (err) {
