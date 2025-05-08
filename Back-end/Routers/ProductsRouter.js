@@ -1,6 +1,7 @@
 const multer = require("multer");
-const { Router } = require("express");
-const router = Router({ mergeParams: true });
+// const { Router } = require("express");
+// const router = Router({ mergeParams: true });
+const router = require("express").Router({ mergeParams: true });
 
 //! Admin Auth Middleware -------------------------------------------
 const { adminAccess } = require("../ManageAccess/adminAuth");
@@ -9,7 +10,7 @@ const { adminAccess } = require("../ManageAccess/adminAuth");
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-//! Route Handlers -------------------------------------------
+//! Handler Functions -------------------------------------------
 const {
   addProduct,
   showAllProducts,
@@ -18,9 +19,13 @@ const {
   editProduct,
   deleteAllProducts,
   deleteOneProduct,
+  getProductImage,
 } = require("../Controller/ProductsController");
 
 //! Routes -------------------------------------------
+//? Image Route
+router.get("/images/id/:id", getProductImage);
+
 //? All Products
 router
   .route("/")
@@ -36,6 +41,6 @@ router
   .route("/id/:id")
   .get(showOneProduct)
   .post(adminAccess, deleteOneProduct)
-  .put(adminAccess, editProduct);
+  .put(adminAccess, upload.single("Image"), editProduct);
 
 module.exports = router;
