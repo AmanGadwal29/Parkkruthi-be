@@ -12,6 +12,7 @@ const productRouter = require("./Routers/ProductsRouter");
 const cors = require("cors");
 
 //!Midllesware  -------------------------------------------
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
