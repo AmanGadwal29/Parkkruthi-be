@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import "./Navbar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSearch,
@@ -19,158 +18,175 @@ import {
   faPinterest,
 } from "@fortawesome/free-brands-svg-icons";
 import DropdownNav from "./DropdownNav";
-import Button from "./Button";
+
+const SocialLinks = () => {
+  const links = [
+    { href: "https://www.instagram.com/urvann.india", icon: faInstagram },
+    {
+      href: "https://www.facebook.com/groups/217942056914835",
+      icon: faFacebook,
+    },
+    { href: "https://www.youtube.com/c/UrvannAcademy", icon: faYoutube },
+    { href: "https://www.linkedin.com/company/urvann/", icon: faLinkedin },
+    {
+      href: "https://api.whatsapp.com/send/?phone=919599585773",
+      icon: faWhatsapp,
+    },
+    { href: "mailto:customersupport@urvann.com", icon: faEnvelope },
+    { href: "https://in.pinterest.com/urvann_india/", icon: faPinterest },
+  ];
+
+  return (
+    <div className="flex gap-6">
+      {links.map(({ href, icon }) => (
+        <a
+          key={href}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-white text-2xl hover:text-[#216060] transition-colors duration-300">
+          <FontAwesomeIcon icon={icon} />
+        </a>
+      ))}
+    </div>
+  );
+};
 
 const Navbar = () => {
   const [userName, setUserName] = useState("");
-  const navigate = useNavigate();
+  const [cartCount, setCartCount] = useState(0);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState(null);
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Authentication check
+  let isAuthenticated = location.state?.isAuthenticated;
+  if (isAuthenticated === undefined) {
+    isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
+  }
+
+  // On mount: fetch user
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
       setUserName(parsedUser.name);
     }
-    
   }, []);
 
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState(null);
-  const [cartCount, setCartCount] = useState(0);
-  const location = useLocation();
-  let isAuthenticated = location.state?.isAuthenticated;
-  if (isAuthenticated === undefined) {
-    isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
-  }
-
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+    setIsMenuOpen((prev) => !prev);
     setActiveDropdown(null);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("isAuthenticated");
+    localStorage.clear();
     setUserName("");
     navigate("/login");
   };
 
   return (
     <>
-      <div className="w-full relative font-arial">
-        <div className="bg-gradient-to-br from-[#3aa560] via-[#3aa560] to-[#b7e66c] text-white flex justify-between px-5 py-2">
-          <div className="flex gap-4">
-            <a
-              href="https://www.instagram.com/urvann.india"
-              target="_blank"
-              rel="noopener noreferrer">
-              <FontAwesomeIcon icon={faInstagram} />
-            </a>
-            <a
-              href="https://www.facebook.com/groups/217942056914835"
-              target="_blank"
-              rel="noopener noreferrer">
-              <FontAwesomeIcon icon={faFacebook} />
-            </a>
-            <a
-              href="https://www.youtube.com/c/UrvannAcademy"
-              target="_blank"
-              rel="noopener noreferrer">
-              <FontAwesomeIcon icon={faYoutube} />
-            </a>
-            <a
-              href="https://www.linkedin.com/company/urvann/"
-              target="_blank"
-              rel="noopener noreferrer">
-              <FontAwesomeIcon icon={faLinkedin} />
-            </a>
-            <a
-              href="https://api.whatsapp.com/send/?phone=919599585773"
-              target="_blank"
-              rel="noopener noreferrer">
-              <FontAwesomeIcon icon={faWhatsapp} />
-            </a>
-            <a
-              href="mailto:customersupport@urvann.com"
-              target="_blank"
-              rel="noopener noreferrer">
-              <FontAwesomeIcon icon={faEnvelope} />
-            </a>
-            <a
-              href="https://in.pinterest.com/urvann_india/"
-              target="_blank"
-              rel="noopener noreferrer">
-              <FontAwesomeIcon icon={faPinterest} />
-            </a>
-          </div>
-          <div>
-            {isAuthenticated && (
-              <h1 className="text-xl font-bold text-white mr-10">
-                Welcome back{userName ? ', ' : ' '}
-                <span className="text-yellow-300">{userName ? userName[0].toUpperCase() + userName.slice(1) : ""}</span>
-                <span className="absolute animate-bounce mx-2">!</span>
-              </h1>
-            )}
-          </div>
-        </div>
-
-        {/* Main navbar */}
-        <div className="main-navbar">
-          <div className="logo">
-            <Link to="/">
-              <img src="/logo1.jpg" alt="Nurvann Logo" />
-            </Link>
-          </div>
-
-          <div className="location-selector">
-            <FontAwesomeIcon icon={faMapMarkerAlt} />
-            <span>Bangalore</span>
-            <button className="change-btn">(Change)</button>
-          </div>
-
-          <div className="search-bar">
-            <input type="text" placeholder="Search by Products" />
-            <button className="search-btn">
-              <FontAwesomeIcon icon={faSearch} />
-            </button>
-          </div>
-
-          <div className="nav-actions ">
-            <Link to="/help" className='font-semibold relative px-4 py-2 rounded-lg border-none transition-all hover:bg-[#2a7845] bg-[#3AA560] text-white cursor-pointer  duration-200 active:scale-95 font-poppins'>
-              Help
-            </Link>
-
-            {isAuthenticated ? (
-              <button
-              onClick={handleLogout}
-              className='font-semibold relative px-5 py-2 rounded-lg border-none bg-red-400 text-white cursor-pointer transition-transform duration-200 active:scale-95 font-poppins'
-            >LOGOUT</button>) : (
-              <Link to="/login" className='font-semibold relative px-4 py-2 rounded-lg border-none transition-all hover:bg-[#2a7845] bg-[#3AA560] text-white cursor-pointer  duration-200 active:scale-95 font-poppins'>
-                Login
-              </Link>
-            )}
-
-            <Link to="/cart" className="cart-icon">
-              <FontAwesomeIcon
-                size="xl"
-                color="#B7E66C"
-                icon={faShoppingCart}
-              />
-              <span className="cart-count">{cartCount}</span>
-            </Link>
-          </div>
-
-          <button className="menu-toggle" onClick={toggleMenu}>
-            <FontAwesomeIcon icon={isMenuOpen ? faTimes : faBars} />
-          </button>
-        </div>
+      {/* Topbar */}
+      <div
+        className={`bg-gradient-to-r from-[#008080] via-[#008B8B] to-[#2aded5] text-white flex ${
+          userName ? "justify-between" : "justify-center"
+        }  px-5 py-2 font-[Arial]`}>
+        <SocialLinks />
+        {isAuthenticated && (
+          <h1 className="text-xl font-bold text-white mr-10">
+            Welcome back{userName ? ", " : " "}
+            <span className="text-yellow-300">
+              {userName?.charAt(0).toUpperCase() + userName?.slice(1)}
+            </span>
+            <span className="absolute animate-bounce mx-2">!</span>
+          </h1>
+        )}
       </div>
 
-      {/* Dropdown */}
+      {/* Main Navbar */}
+      <div className="flex items-center justify-between px-5 py-4 bg-white shadow-sm border-b border-gray-200">
+        {/* Logo */}
+        <div className="h-[75px]">
+          <Link to="/">
+            <img src="/logo1.jpg" alt="Parkkhruthi Logo" className="h-full" />
+          </Link>
+        </div>
+
+        {/* Location */}
+        <div className="hidden md:flex items-center gap-2 text-sm text-gray-700">
+          <FontAwesomeIcon icon={faMapMarkerAlt} className="text-[#31aeae]" />
+          <span>Bangalore</span>
+          <button className="text-[#31aeae] ml-1 underline hover:text-[#237c7c] transition-colors">
+            (Change)
+          </button>
+        </div>
+
+        {/* Search */}
+        <div className="flex flex-grow max-w-[400px] mx-5">
+          <input
+            type="text"
+            placeholder="Search by Products"
+            className="flex-grow px-3 py-2 border border-gray-300 rounded-l-md outline-none text-sm"
+          />
+          <button className="bg-[#31aeae] hover:bg-[#237c7c] text-white px-4 rounded-r-md">
+            <FontAwesomeIcon icon={faSearch} />
+          </button>
+        </div>
+
+        {/* Nav buttons */}
+        <div className="flex items-center gap-4">
+          <Link
+            to="/help"
+            className="px-4 py-2 text-sm font-medium border border-[#31aeae] text-[#31aeae] rounded-md hover:bg-[#e6f5f5] transition-all">
+            Help
+          </Link>
+
+          {isAuthenticated ? (
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 text-sm font-medium border border-red-400 text-red-500 rounded-md hover:bg-red-50 transition-all">
+              Logout
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              className="px-4 py-2 text-sm font-medium border border-[#31aeae] text-[#31aeae] rounded-md hover:bg-[#e6f5f5] transition-all">
+              Login
+            </Link>
+          )}
+
+          <Link to="/cart" className="relative ml-2">
+            <FontAwesomeIcon
+              icon={faShoppingCart}
+              className="text-[#31aeae] text-2xl hover:scale-110 transition-transform duration-300 drop-shadow-sm"
+            />
+            <span
+  className={`absolute -top-2 -right-2 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-md ring-2 ring-white ${
+    cartCount === 0 ? "bg-red-500" : "bg-[#31aeae]"
+  }`}
+>
+  {cartCount}
+</span>
+
+          </Link>
+        </div>
+
+        {/* Mobile menu toggle */}
+        <button
+          className="block md:hidden text-xl text-[#31aeae] ml-4"
+          onClick={toggleMenu}>
+          <FontAwesomeIcon icon={isMenuOpen ? faTimes : faBars} />
+        </button>
+      </div>
+
+      {/* Dropdown navigation */}
       <DropdownNav
-        setActiveDropdown={setActiveDropdown}
-        activeDropdown={activeDropdown}
         isMenuOpen={isMenuOpen}
+        activeDropdown={activeDropdown}
+        setActiveDropdown={setActiveDropdown}
       />
     </>
   );

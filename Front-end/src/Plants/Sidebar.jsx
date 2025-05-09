@@ -19,17 +19,6 @@ const Sidebar = () => {
       "Organic Fertilizers": { path: "/fertilizers/Organic Fertilizers" },
       "Chemical Fertilizers": { path: "/fertilizers/Chemical Fertilizers" },
     },
-    "Soil & More": {},
-    "Home Decor Plants": {},
-    Seeds: {},
-    Tools: {},
-    Gifting: {},
-    "Bulk Gifting": {},
-    Others: {},
-    Sale: {},
-    "Best Sellers": {},
-    "Plant Stands": {},
-    Blog: {},
   };
 
   const toggleAccordion = (key) => {
@@ -39,7 +28,7 @@ const Sidebar = () => {
   return (
     <div>
       {/* Mobile Horizontal Category Buttons */}
-      <div className="lg:hidden outline block w-full overflow-hidden">
+      <div className="lg:hidden  block w-full overflow-hidden">
         <nav className="flex justify-start w-auto overflow-x-scroll gap-4 px-4 whitespace-nowrap">
           {Object.keys(Category).map((category) => (
             <button key={category} className="px-4 py-2 bg-green-100 rounded">

@@ -1,23 +1,24 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useCallback } from "react";
 
 export default function Carousel() {
   const navigate = useNavigate();
 
   const images = [
-    { src: "caraousel1.avif", path: "/plants/Flower Plants" },
-    { src: "caraousel2.avif", path: "/plants" },
+    { src: "slideimg1.png", path: "/plants/Potted Plants" },
+    { src: "slideimg2.png", path: "/plants/Flower Plants" },
     { src: "caraousel3.avif", path: "/plants/Indoor Plants" },
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const nextSlide = () => {
+  const nextSlide = useCallback(() => {
     setCurrentIndex((prevIndex) =>
       prevIndex === images.length - 1 ? 0 : prevIndex + 1
     );
-  };
+  }, [images.length]);
 
   const prevSlide = () => {
     setCurrentIndex((prevIndex) =>
@@ -28,11 +29,13 @@ export default function Carousel() {
   useEffect(() => {
     const interval = setInterval(nextSlide, 4000);
     return () => clearInterval(interval);
-  }, []);
+  }, [images.length, nextSlide]);
 
   return (
     <div className="relative w-full mx-auto overflow-hidden">
-      <div className="flex transition-transform duration-700 ease-in-out" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
+      <div
+        className="flex transition-transform duration-700 ease-in-out"
+        style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
         {images.map((image, index) => (
           <img
             key={index}
@@ -48,16 +51,14 @@ export default function Carousel() {
       <button
         onClick={prevSlide}
         aria-label="Previous image"
-        className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white/80 hover:bg-white text-black rounded-full p-2 shadow-md transition"
-      >
+        className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white/80 hover:bg-white text-black rounded-full p-2 shadow-md transition">
         <ArrowLeft size={20} />
       </button>
 
       <button
         onClick={nextSlide}
         aria-label="Next image"
-        className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white/80 hover:bg-white text-black rounded-full p-2 shadow-md transition"
-      >
+        className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white/80 hover:bg-white text-black rounded-full p-2 shadow-md transition">
         <ArrowRight size={20} />
       </button>
 
