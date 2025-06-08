@@ -1,4 +1,18 @@
+const webpush = require("web-push");
+
 const UserSchema = require("../Model/UserSchema");
+
+const Subscription = require("../Model/SubscribedUserSchema");
+
+const { PRIVATE_KEY, PUBLIC_KEY } = process.env;
+
+if (PRIVATE_KEY && PUBLIC_KEY) {
+  webpush.setVapidDetails(
+    "mailto:youremail@example.com",
+    PUBLIC_KEY,
+    PRIVATE_KEY
+  );
+}
 
 //! Add User Handler Function----------------------------------
 exports.addUser = async (req, res) => {
@@ -40,5 +54,25 @@ exports.userLogin = async (req, res) => {
         });
       }
     }
+  }
+};
+
+exports.saveSubscription = async (req, res) => {
+  const { userId, subscription } = req.body;
+  try {
+    const existing = await Subscription.findOne({
+      endpoint: subscription.endpoint,
+    });
+    if (!existing) {
+      await Subscription.create({
+        user: userId,
+        endpoint: subscription.endpoint,
+        keys: subscription.keys,
+      });
+    }
+    res.status(201).json({ message: "Subscription saved" });
+  } catch (err) {
+    console.error("Subscription save error:", err);
+    res.status(500).json({ message: "Subscription error" });
   }
 };

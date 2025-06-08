@@ -3,7 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Form = () => {
-  const apiURL = import.meta.env.VITE_API_URL;
+  const usersApiUrl = import.meta.env.VITE_USERS_API;
+
   const navigate = useNavigate();
 
   const [userData, setuserData] = useState({
@@ -15,101 +16,98 @@ const Form = () => {
   });
 
   const HandleInput = (e) => {
-    let name = e.target.name;
-    let value = e.target.value;
+    const { name, value } = e.target;
     setuserData({ ...userData, [name]: value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post(`${apiURL}/usersapi/adduser`, userData)
+      .post(`${usersApiUrl}/signup`, userData)
       .then((res) => {
         console.log(res.data);
         navigate("/login");
       });
   };
 
-  return (
-    <div className="flex justify-center items-center min-h-screen ">
+  return ( 
       <form
-        className="flex flex-col gap-2 max-w-sm md:max-w-md lg:max-w-lg bg-green-50 p-5 rounded-2xl relative shadow-md w-full"
         onSubmit={handleSubmit}
+        className="w-full m-5 max-w-sm md:max-w-md lg:max-w-lg bg-white p-6 rounded-3xl shadow-xl space-y-5"
       >
-        {/* Title with dots and animation */}
-        <p className="text-[28px] text-[#1f7d4e] font-semibold tracking-tight relative flex items-center pl-8">
+        {/* Title */}
+        <div className="text-2xl font-bold text-green-600 text-center">
           Register
-          <span className="absolute left-0 w-4 h-4 bg-[#41e16c] rounded-full" />
-          <span className="absolute left-0 w-4 h-4 bg-[#176b26] rounded-full animate-ping" />
-        </p>
-
-        {/* Subtext */}
-        <p className="text-sm text-gray-600">
+        </div>
+        <p className="text-sm text-gray-500 text-center">
           Signup now and get full access to our app.
         </p>
 
-        {/* Name */}
-        <div className="flex gap-2">
-          <label className="relative">
-            <input
-              required
-              type="text"
-              name="Name"
-              value={userData.Name}
-              onChange={HandleInput}
-              placeholder=" "
-              className="w-72 p-3 border border-gray-400 rounded-xl peer outline-none"
-            />
-            <span
-              className="absolute left-3 top-[10px] text-gray-500 text-sm peer-placeholder-shown:block peer-placeholder-shown:top-[10px] peer-placeholder-shown:text-sm peer-focus:hidden peer-focus:top-7 peer-focus:text-xs peer-focus:font-semibold peer-valid:text-green-600 transition-all duration-300"
-            >
-              Name
-            </span>
-          </label>
+        {/* Inputs */}
+        <div className="space-y-4">
+          <input
+            required
+            type="text"
+            name="Name"
+            value={userData.Name}
+            onChange={HandleInput}
+            placeholder="Name"
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+          <input
+            required
+            type="email"
+            name="Email"
+            value={userData.Email}
+            onChange={HandleInput}
+            placeholder="Email"
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+          <input
+            required
+            type="tel"
+            name="Phone"
+            value={userData.Phone}
+            onChange={HandleInput}
+            placeholder="Phone"
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+          <input
+            required
+            type="text"
+            name="Ref"
+            value={userData.Ref}
+            onChange={HandleInput}
+            placeholder="Referral Code"
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+          <input
+            required
+            type="password"
+            name="Password"
+            value={userData.Password}
+            onChange={HandleInput}
+            placeholder="Password"
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
         </div>
-
-        {/* Other inputs */}
-        {[
-          { label: "Email", type: "email" },
-          { label: "Phone", type: "tel" },
-          { label: "Ref", type: "text", display: "Refereral code" },
-          { label: "Password", type: "password" },
-        ].map(({ label, type, display }) => (
-          <label key={label} className="relative">
-            <input
-              required
-              type={type}
-              name={label}
-              value={userData[label]}
-              onChange={HandleInput}
-              placeholder=" "
-              className="w-72 p-3 border border-gray-400 rounded-xl peer outline-none"
-            />
-            <span
-              className="absolute left-3 top-[10px] text-gray-500 text-sm peer-placeholder-shown:block peer-placeholder-shown:top-[10px] peer-placeholder-shown:text-sm peer-focus:hidden peer-focus:top-7 peer-focus:text-xs peer-focus:font-semibold peer-valid:text-green-600 transition-all duration-300"
-            >
-              {display || label}
-            </span>
-          </label>
-        ))}
 
         {/* Submit Button */}
         <button
           type="submit"
-          className="border-none outline-none bg-[#1ca14d] hover:bg-green-800 text-white p-3 rounded-xl text-[16px] transition-all"
+          className="w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition"
         >
           Submit
         </button>
 
-        {/* Sign in link */}
+        {/* Redirect link */}
         <p className="text-sm text-center text-gray-600">
           Already have an account?{" "}
-          <Link to="/login" className="text-[#24724f] hover:underline">
-            SignIn
+          <Link to="/login" className="text-green-600 hover:underline">
+            Sign In
           </Link>
         </p>
       </form>
-    </div>
   );
 };
 

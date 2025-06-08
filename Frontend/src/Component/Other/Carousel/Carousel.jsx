@@ -6,20 +6,20 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-// Register Swiper modules for v8
+// Register Swiper modules
 SwiperCore.use([Navigation, Pagination, Autoplay]);
 
 export default function Carousel() {
   const navigate = useNavigate();
 
   const images = [
-    { src: "slideimg1.png", path: "/plants/pottedplants" },
-    { src: "slideimg2.png", path: "/plants/flowerplants" },
-    { src: "slideimg3.png", path: "/plants/indoorplants" },
+    { src: "slideimg1.png", path: "/plants/category/pottedplants" },
+    { src: "slideimg2.png", path: "/plants/category/flowerplants" },
+    { src: "slideimg3.png", path: "/plants/category/indoorplants" },
   ];
 
   return (
-    <div className="relative w-full mx-auto h-[450px]">
+    <div className="relative w-full h-[250px] sm:h-[300px] md:h-[400px] lg:h-[500px] mx-auto">
       <Swiper
         spaceBetween={30}
         slidesPerView={1}
@@ -27,7 +27,7 @@ export default function Carousel() {
         pagination={{ clickable: true }}
         autoplay={{ delay: 4000, disableOnInteraction: false }}
         loop={true}
-        className="h-full"
+        className="h-full !pb-5"
       >
         {images.map((image, index) => (
           <SwiperSlide key={index}>
@@ -36,8 +36,7 @@ export default function Carousel() {
               <img
                 src={image.src}
                 alt={`background-${index}`}
-                className="absolute z-0 blur-[2px] scale-[1.45] pointer-events-none"
-                style={{ height: "300px", width: "auto" }}
+                className="absolute z-0 blur-[10px] w-full h-full object-cover scale-105 pointer-events-none"
               />
 
               {/* Foreground Image */}
@@ -45,7 +44,7 @@ export default function Carousel() {
                 src={image.src}
                 alt={`slide-${index}`}
                 onClick={() => navigate(image.path)}
-                className="relative z-10 h-[370px] w-auto shadow-md object-cover cursor-pointer"
+                className="relative z-10 max-w-full max-h-full object-contain rounded-lg shadow-md cursor-pointer"
               />
             </div>
           </SwiperSlide>

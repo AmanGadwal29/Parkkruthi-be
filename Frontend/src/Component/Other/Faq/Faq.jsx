@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-// Optional: Uncomment to use framer-motion
-// import { motion, AnimatePresence } from "framer-motion";
 
 const faqData = [
   {
@@ -25,70 +23,60 @@ const Faq = () => {
   };
 
   return (
-    <div className="px-4 md:px-20 py-10 bg-gray-50">
-      <h1 className="text-3xl font-bold text-center mb-10 text-gray-800">
-        FREQUENTLY ASKED QUESTIONS
-      </h1>
-      <div className="space-y-4">
-        {faqData.map((faq, index) => {
-          const isOpen = index === activeIndex;
-          return (
-            <div
-              key={index}
-              className="bg-white rounded-xl border border-gray-200 shadow-sm transition hover:shadow-md"
-            >
-              <button
-                onClick={() => toggleFAQ(index)}
-                className="w-full flex justify-between items-center px-6 py-5 focus:outline-none"
-                aria-expanded={isOpen}
-                aria-controls={`faq-answer-${index}`}
-              >
-                <span className="text-left text-base font-medium text-gray-800">
-                  {faq.question}
-                </span>
-                <span className="relative w-5 h-5 transition-transform">
-                  <span className="absolute top-1/2 left-0 w-5 h-0.5 bg-gray-800 transform -translate-y-1/2 transition-all duration-300" />
-                  <span
-                    className={`absolute left-[47%] top-0 w-0.5 h-5 bg-gray-800 origin-center transform transition-all duration-300 ${
-                      isOpen ? "rotate-90 opacity-0" : "rotate-0 opacity-100"
-                    }`}
-                  />
-                </span>
-              </button>
+    <section className="w-full px-4 md:px-20 py-16 bg-[#f9fafb]">
+      <div className="max-w-5xl mx-auto">
+        <h2 className="text-4xl font-extrabold text-center text-gray-900 mb-12">
+          Frequently Asked Questions
+        </h2>
 
-              {/* Animated answer box */}
+        <div className="space-y-6">
+          {faqData.map(({ question, answer }, index) => {
+            const isOpen = index === activeIndex;
+
+            return (
               <div
-                id={`faq-answer-${index}`}
-                className={`grid transition-all duration-300 ease-in-out px-6 ${
-                  isOpen ? "grid-rows-[1fr] py-2" : "grid-rows-[0fr] py-0"
-                } overflow-hidden`}
+                key={index}
+                className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300"
               >
-                <div className="overflow-hidden">
-                  <p className="text-sm text-gray-600 pb-5">{faq.answer}</p>
+                <button
+                  onClick={() => toggleFAQ(index)}
+                  className="w-full px-6 py-5 flex justify-between items-center text-left focus:outline-none"
+                  aria-expanded={isOpen}
+                  aria-controls={`faq-answer-${index}`}
+                >
+                  <span className="text-lg font-medium text-gray-800">{question}</span>
+
+                  {/* Plus icon turns to cross on open */}
+                  <span className="relative w-5 h-5">
+                    <span
+                      className={`absolute w-full h-0.5 bg-gray-800 left-0 top-1/2 transform -translate-y-1/2 transition-transform duration-300 ${
+                        isOpen ? "rotate-45" : "rotate-0"
+                      }`}
+                    />
+                    <span
+                      className={`absolute h-full w-0.5 bg-gray-800 left-1/2 top-0 transform -translate-x-1/2 transition-transform duration-300 ${
+                        isOpen ? "rotate-45" : "rotate-0"
+                      }`}
+                    />
+                  </span>
+                </button>
+
+                <div
+                  id={`faq-answer-${index}`}
+                  className={`grid transition-all duration-300 ease-in-out px-6 overflow-hidden ${
+                    isOpen ? "grid-rows-[1fr] py-4" : "grid-rows-[0fr] py-0"
+                  }`}
+                >
+                  <div className="overflow-hidden">
+                    <p className="text-base text-gray-700 leading-relaxed">{answer}</p>
+                  </div>
                 </div>
               </div>
-
-              {/* Or, with framer-motion — uncomment to use
-              <AnimatePresence>
-                {isOpen && (
-                  <motion.div
-                    id={`faq-answer-${index}`}
-                    className="px-6 pb-5"
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <p className="text-sm text-gray-600">{faq.answer}</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              */}
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 

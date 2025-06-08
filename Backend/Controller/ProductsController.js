@@ -1,65 +1,54 @@
 const mongoose = require("mongoose");
+const webpush = require("web-push");
+require("dotenv").config();
+const { PRIVATE_KEY, PUBLIC_KEY } = process.env;
 
-//! All Schemas -------------------------------------------
-const schemaModels = {
-  plants: require("../Model/PlantsSchema"),
-  pots: require("../Model/PotsSchema"),
-  fertilizers: require("../Model/FertilizersSchema"),
-};
+//! Product Schema Manager -------------------------------------------
+const schemaManager = require("../Model/ProductSchema");
 
-//! Acquiring Required Schema -------------------------------------------
-const getSchema = (productType) => {
-  const schema = schemaModels[productType];
-  if (!schema) throw new Error("Invalid product type");
-  return schema;
-};
+//! Subscribed Users -------------------------------------------
+const Subscription = require("../Model/SubscribedUserSchema");
 
-//! Acquiring Product Image -------------------------------------------
-exports.getProductImage = async (req, res) => {
-  try {
-    const productType = req.params.productType;
-    const id = req.params.id;
+//! Set VAPID -------------------------------------------
+PRIVATE_KEY &&
+  PUBLIC_KEY &&
+  webpush.setVapidDetails(
+    "mailto:amangadwal001@example.com",
+    PUBLIC_KEY,
+    PRIVATE_KEY
+  );
 
-    //Getting the Schema
-    const schema = getSchema(productType);
-
-    const product = await schema.findById(id);
-    if (!product || !product.Image) {
-      return res.status(404).send("Image not found");
-    }
-
-    res.set("Content-Type", product.Image.contentType);
-    res.send(product.Image.data);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-};
-
-//! CRUD Operations -------------------------------------------
-//! C
-//? Add Product Handler Function(HF)
+//! Handler Functions -------------------------------------------
+//? Add Product HF
 exports.addProduct = async (req, res) => {
   try {
     const productType = req.params.productType;
     const payload = req.body;
+    const imageUrls = req.files.map((file) => file.path);
 
-    //Getting the Schema
-    const schema = getSchema(productType);
+    const product = schemaManager(productType);
 
-    await schema.create({
+    const document = await product.create({
       ...payload,
-      CategoryRoute: payload.Category.toLowerCase().replace(/\s+/g, "") + "s",
-      Image: req.file
-        ? {
-            data: req.file.buffer,
-            contentType: req.file.mimetype,
-          }
-        : undefined,
-      ImageURL: req.file
-        ? `/api/v1/products/${productType}/images/id/${new mongoose.Types.ObjectId()}`
-        : null,
+      CategoryRoute: payload.Category?.toLowerCase().replace(/\s+/g, "") + "s",
+      ImageURL: imageUrls,
     });
-    res.status(201).json({ status: "Success", data: { payload } });
+
+    //fetching all subscribed users
+    const subscriptions = await Subscription.find();
+    //notification payload
+    const notificationPayload = JSON.stringify({
+      title: "New Product Added",
+      body: `Check out the new product: ${payload.Title}`,
+    });
+
+    // Send notifications to all subscribers
+    subscriptions.forEach((sub) => {
+      webpush
+        .sendNotification(sub, notificationPayload)
+        .catch((err) => console.error("Notification error:", err));
+    });
+    res.status(201).json({ status: "Success", data: { document } });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -67,30 +56,60 @@ exports.addProduct = async (req, res) => {
 
 //! R
 //? Show All Products HF
+exports.allProductsCatalogue = async (req, res) => {
+  try {
+    const collections = await mongoose.connection.db
+      .listCollections()
+      .toArray();
+
+    const productCollections = collections.map((col) => col.name);
+
+    const allProducts = [];
+
+    for (const collectionName of productCollections) {
+      const productModel = schemaManager(collectionName);
+      const products = await productModel.find({});
+
+      const formatted = products.map((product) => {
+        const { Image, ...rest } = product._doc;
+        return {
+          ...rest,
+          ImageURL: product.ImageURL || [],
+          ProductType: collectionName,
+        };
+      });
+
+      allProducts.push(...formatted);
+    }
+
+    res.status(200).json({
+      status: "Success",
+      resources: allProducts.length,
+      data: { allProducts },
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 exports.showAllProducts = async (req, res) => {
   try {
     const productType = req.params.productType;
 
-    //Getting the Schema
-    const schema = getSchema(productType);
+    const product = schemaManager(productType);
 
-    const payload = await schema.find({});
+    const payload = await product.find({});
 
-    // Sending final payload
     const finalPayload = payload.map((product) => {
-      // Excluding unnecessary image buffer data
       const { Image, ...rest } = product._doc;
 
-      // Final payload
       return {
         ...rest,
-        ImageURL: product.Image
-          ? `/api/v1/products/${productType}/images/id/${product._id}`
-          : null,
+        ImageURL: product.ImageURL || [],
       };
     });
 
-    res.status(201).json({
+    res.status(200).json({
       status: "Success",
       resources: finalPayload.length,
       data: { finalPayload },
@@ -103,13 +122,11 @@ exports.showAllProducts = async (req, res) => {
 //? Show All Products of Same Category HF
 exports.showCategoryProducts = async (req, res) => {
   try {
-    const productType = req.params.productType;
-    const category = req.params.category;
+    const { productType, category } = req.params;
 
-    //Getting the Schema
-    const schema = getSchema(productType);
+    const product = schemaManager(productType);
 
-    const payload = await schema.find({
+    const payload = await product.find({
       CategoryRoute: category,
     });
 
@@ -118,20 +135,15 @@ exports.showCategoryProducts = async (req, res) => {
         .status(404)
         .json({ message: "Category does not exist or couldn't be found" });
     } else {
-      // Sending final payload
       const finalPayload = payload.map((product) => {
-        // Excluding unnecessary image buffer data
         const { Image, ...rest } = product._doc;
 
-        // Final payload
         return {
           ...rest,
-          ImageURL: product.Image
-            ? `/api/v1/products/${productType}/images/id/${product._id}`
-            : null,
+          ImageURL: product.ImageURL || [],
         };
       });
-      res.status(201).json({
+      res.status(200).json({
         status: "Success",
         resources: finalPayload.length,
         data: { finalPayload },
@@ -145,33 +157,26 @@ exports.showCategoryProducts = async (req, res) => {
 //? Show One Product HF
 exports.showOneProduct = async (req, res) => {
   try {
-    const productType = req.params.productType;
-    const id = req.params.id;
+    const { productType, id } = req.params;
 
-    //Getting the Schema
-    const schema = getSchema(productType);
+    const product = schemaManager(productType);
 
-    // Validate ObjectId
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "Invalid product ID format" });
     }
 
-    const payload = await schema.findOne({ _id: id });
+    const payload = await product.findOne({ _id: id });
 
-    // Excluding unnecessary image buffer data
     const { Image, ...rest } = payload._doc;
 
-    // Sending final payload
     const finalPayload = {
       ...rest,
-      ImageURL: payload.Image
-        ? `/api/v1/products/${productType}/images/id/${payload._id}`
-        : null,
+      ImageURL: product.ImageURL || [],
     };
 
     !finalPayload
       ? res.status(404).json({ message: "Product not found" })
-      : res.status(201).json({ status: "Success", data: { finalPayload } });
+      : res.status(200).json({ status: "Success", data: { finalPayload } });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -181,24 +186,29 @@ exports.showOneProduct = async (req, res) => {
 //? Edit Product HF
 exports.editProduct = async (req, res) => {
   try {
-    const productType = req.params.productType;
-    const id = req.params.id;
-
+    const { productType, id } = req.params;
     const payload = req.body;
+
     if (!payload || Object.keys(payload).length === 0) {
       return res.status(400).json({ message: "Request body is empty" });
     }
 
-    //Getting the Schema
-    const schema = getSchema(productType);
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid product ID format" });
+    }
 
-    const existingProduct = await schema.findOne({ _id: id });
-    if (!existingProduct) {
+    const product = schemaManager(productType);
+
+    const updatedProduct = await product.findByIdAndUpdate(id, payload, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedProduct) {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    await schema.updateOne({ _id: id }, { $set: payload });
-    res.status(201).json({ status: "Success", data: { payload } });
+    res.status(200).json({ status: "Success", data: { updatedProduct } });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -210,13 +220,12 @@ exports.deleteAllProducts = async (req, res) => {
   try {
     const productType = req.params.productType;
 
-    //Getting the Schema
-    const schema = getSchema(productType);
+    const product = schemaManager(productType);
 
-    await schema.deleteMany();
-    res.status(201).json({
+    await product.deleteMany();
+    res.status(200).json({
       status: "Success",
-      message: "All products removed successfully",
+      message: "All products removed...",
     });
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -226,18 +235,20 @@ exports.deleteAllProducts = async (req, res) => {
 //? Delete One Product HF
 exports.deleteOneProduct = async (req, res) => {
   try {
-    const productType = req.params.productType;
+    const { productType, id } = req.params;
 
-    //Getting the Schema
-    const schema = getSchema(productType);
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid product ID format" });
+    }
 
-    const id = req.params.id;
-    const deletePayload = await schema.deleteOne({ _id: id });
+    const product = schemaManager(productType);
+
+    const deletePayload = await product.deleteOne({ _id: id });
     !deletePayload
       ? res.status(404).json({ message: "Product not found" })
-      : res.status(201).json({
+      : res.status(200).json({
           status: "Success",
-          message: "Product removed successfully",
+          message: "Product removed...",
         });
   } catch (err) {
     res.status(400).json({ error: err.message });

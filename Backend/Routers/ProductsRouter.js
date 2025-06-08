@@ -1,46 +1,30 @@
+const express = require("express");
 const multer = require("multer");
-// const { Router } = require("express");
-// const router = Router({ mergeParams: true });
-const router = require("express").Router({ mergeParams: true });
+const router = express.Router({ mergeParams: true });
+const upload = multer({ dest: "uploads/" });
 
-//! Admin Auth Middleware -------------------------------------------
-const { adminAccess } = require("../ManageAccess/adminAuth");
-
-//! Image Insertion Configuration -------------------------------------------
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
-
-//! Handler Functions -------------------------------------------
-const {
-  addProduct,
-  showAllProducts,
-  showCategoryProducts,
-  showOneProduct,
-  editProduct,
-  deleteAllProducts,
-  deleteOneProduct,
-  getProductImage,
-} = require("../Controller/ProductsController");
+//! Controller -------------------------------------------
+const controller = require("../Controller/ProductsController");
 
 //! Routes -------------------------------------------
-//? Image Route
-router.get("/images/id/:id", getProductImage);
+//"/"
+router.route("/").get(controller.allProductsCatalogue);
 
-//? All Products
+//"/:productType"
 router
-  .route("/")
-  .get(showAllProducts)
-  .post(adminAccess, upload.single("Image"), addProduct)
-  .delete(adminAccess, deleteAllProducts);
+  .route("/:productType")
+  .post(upload.array("images"), controller.addProduct)
+  .get(controller.showAllProducts)
+  .delete(controller.deleteAllProducts);
 
-//? Products Category
-router.route("/:category").get(showCategoryProducts);
+//"/:productType/category/:category"
+router.get("/:productType/category/:category", controller.showCategoryProducts);
 
-//? Products id
+//"/:productType/:id"
 router
-  .route("/id/:id")
-  .get(showOneProduct)
-  .post(adminAccess, deleteOneProduct)
-  .put(adminAccess, upload.single("Image"), editProduct);
+  .route("/:productType/:id")
+  .get(controller.showOneProduct)
+  .patch(upload.none(), controller.editProduct)
+  .delete(controller.deleteOneProduct);
 
 module.exports = router;

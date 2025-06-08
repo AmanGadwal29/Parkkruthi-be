@@ -1,8 +1,7 @@
 import React from 'react';
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
-import Home from "./Pages/Home/Home.jsx";
-import Blog from "./Pages/Blog/Blog.jsx";
+import Home from "./Component/Home.jsx";
 import ProductDetails from "./Pages/ProductDetails/ProductDetails.jsx";
 import Login from "./Pages/Login/Login.jsx";
 import Register from "./Pages/Register/Register.jsx";
@@ -15,24 +14,35 @@ import Footer from "./Component/Layout/Footer/Footer.jsx";
 import UserProtectedRoute from "./Utils/UserProtectedRoute.jsx";
 import AdminProtectedRoute from "./Utils/AdminPortectedRoute.jsx";
 import AdminDashboard from "./Pages/Admin/AdminDashboard.jsx";
-import CardsHomePage from "./Plants/CardsHomePage.jsx";
+import CardsHomePage from "./Products/CardsHomePage.jsx";
 import ScrollToTop from "./Utils/ScrollToTop.jsx";
+import { useAddress } from './Context/AddressContext.jsx';
+import AddressModal from './Pages/Address/AddressModal.jsx';
+import WhatsappButton from './Component/WhatsappButton.jsx';
+// import AddressManager from './Pages/Address/AddressManager.jsx';
 
 function App() {
+  const { showAddressModal } = useAddress();
   return (
     <>
-    <ScrollToTop/>
+      <ScrollToTop />
+      {showAddressModal && (
+        <AddressModal />
+      )}
       <Navbar />
+      {/* <AddressManager/> */}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/:category" element={<CardsHomePage />} />
-        <Route path="/:category/:type" element={<CardsHomePage />} />
-        <Route path="/product/:details" element={<ProductDetails />} />
-        <Route path="/login" element={<Login />} />
+        {/* Admin and User */}
         <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/adminlogin" element={<AdminLogin />} />
         <Route path="/admindashboard" element={<AdminDashboard />} />
-        <Route path="/blog" element={<Blog />} />
+
+        {/* Products */}
+        <Route path="/:productType/category/:category" element={<CardsHomePage />} />
+        <Route path="/:productType" element={<CardsHomePage />} />
+        <Route path="/:productType/:id" element={<ProductDetails />} />
         <Route path="/help" element={<Help />} />
         <Route
           path="/cart"
@@ -61,6 +71,7 @@ function App() {
         />
       </Routes>
       <Footer />
+      <WhatsappButton />
     </>
   );
 }

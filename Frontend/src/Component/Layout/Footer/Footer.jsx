@@ -1,161 +1,131 @@
+import {
+  faInstagram,
+  faFacebook,
+  faYoutube,
+  faLinkedin,
+  faWhatsapp,
+  faPinterest,
+  faTwitter,
+} from "@fortawesome/free-brands-svg-icons";
+import { faEnvelope, faPhone, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const Footer = () => {
   const navigate = useNavigate();
-  const nav1 = [
+
+  const navLinks = [
     { id: 1, title: "About Us", path: "/" },
-    { id: 2, title: "Contact Us", path: "/login" },
-    { id: 3, title: "Careers", path: "/" },
-    { id: 4, title: "Blogs", path: "/" },
-    { id: 5, title: "Get Help", path: "/" },
+    { id: 2, title: "Contact Us", path: "/contact" },
+    { id: 3, title: "Careers", path: "/careers" },
+    { id: 4, title: "Blogs", path: "/blogs" },
+    { id: 5, title: "Get Help", path: "/help" },
+  ];
+
+  const socialLinks = [
+    { href: "https://www.instagram.com/urvann.india", icon: faInstagram },
+    { href: "https://www.facebook.com/groups/217942056914835", icon: faFacebook },
+    { href: "https://www.youtube.com/c/UrvannAcademy", icon: faYoutube },
+    { href: "https://www.linkedin.com/company/urvann/", icon: faLinkedin },
+    { href: "https://api.whatsapp.com/send/?phone=919599585773", icon: faWhatsapp },
+    { href: "mailto:customersupport@urvann.com", icon: faEnvelope },
+    { href: "https://in.pinterest.com/urvann_india/", icon: faPinterest },
+    { href: "https://twitter.com/urvannindia", icon: faTwitter },
   ];
 
   return (
-    <footer className="bg-[#f8f9fa] text-[#333] p-2.5 px-5 font-sans border-t-2 border-[#e9ecef] relative z-[40]">
-      <div className="max-w-[1200px] mx-auto w-full px-5">
-        {/* Top Brand Section */}
-        <div className="w-full mb-10">
-          <div className="flex flex-wrap md:flex-nowrap gap-10 items-center">
+    <footer className="bg-[#276139] text-white font-sans relative z-[40] py-10 px-5">
+      <div className="max-w-[1200px] mx-auto flex flex-col md:flex-row md:justify-between gap-10">
+        {/* Logo & Tagline */}
+        <div className="flex flex-col md:flex-1 gap-6">
             <img
-              src="/logo1.jpg"
-              alt="Urvann Logo"
-              className="h-40 mix-blend-multiply"
+              src="/logo.png"
+              alt="Parkkruthi Logo"
+              className="h-40 object-contain mix-blend-multiply" 
             />
-            <span className="text-[15px] leading-[1.6] text-[#6c757d]">
-              Parkkruthi is your one-stop online nursery for plants, planters, gardening accessories, and tools. Order fresh plants and get free home delivery on the next day!
-            </span>
-            <div className="flex justify-end flex-1">
-              <div className="bg-white rounded-lg p-6 max-w-[500px] w-full shadow-md">
-                <h3 className="text-[#28a745] text-lg font-semibold mb-2">NEWSLETTER</h3>
-                <p className="text-sm mb-4 text-[#6c757d]">Subscribe to get Email Updates</p>
-                <div className="flex flex-wrap sm:flex-nowrap gap-5">
-                  <input
-                    type="email"
-                    placeholder="Email"
-                    className="flex-1 min-w-[300px] px-4 py-3 border border-[#ced4da] rounded text-sm focus:outline-none focus:border-[#28a745] transition"
-                  />
-                  <button
-                    className="bg-[#28a745] hover:bg-[#218838] text-white px-6 py-3 rounded text-sm font-semibold whitespace-nowrap w-full sm:w-auto transition"
-                  >
-                    Subscribe
-                  </button>
-                </div>
-              </div>
-            </div>
+          <p className="text-[#d0e8d0] max-w-sm leading-relaxed text-lg font-medium">
+            Parkkruthi – Bringing Nature to Your Doorstep with Fresh Plants & Expert Care.
+          </p>
+
+          {/* Contact Info */}
+          <div className="space-y-2 text-sm text-[#b8d9b8]">
+            <p className="flex items-center gap-3">
+              <FontAwesomeIcon icon={faMapMarkerAlt} className="text-[#a2cca2]" />
+              Bangalore, Karnataka, India
+            </p>
+            <p className="flex items-center gap-3">
+              <FontAwesomeIcon icon={faPhone} className="text-[#a2cca2]" />
+              +91 98765 43210
+            </p>
+            <p className="flex items-center gap-3">
+              <FontAwesomeIcon icon={faEnvelope} className="text-[#a2cca2]" />
+              support@parkkruthi.com
+            </p>
           </div>
         </div>
 
-        {/* Footer Columns */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8 mb-10">
-          {/* Information Column */}
-          <div>
-            <h3 className="text-[#28a745] text-base font-semibold mb-5 relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-10 after:h-0.5 after:bg-[#28a745]">
-              Information
-            </h3>
-            <ul className="space-y-2">
-              {nav1.map((item) => (
-                <li
-                  key={item.id}
-                  onClick={() => navigate(item.path)}
-                  className="text-sm text-[#495057] cursor-pointer transition-all duration-300 hover:text-[#28a745] hover:translate-x-1"
-                >
-                  {item.title}
-                </li>
-              ))}
-            </ul>
-          </div>
+        {/* Navigation Links */}
+        <nav className="flex flex-col md:flex-1">
+          <h3 className="text-[#a8d5a8] font-semibold mb-4 text-xl border-b border-[#3c7d3c] pb-2 w-max">
+            Quick Links
+          </h3>
+          <ul className="space-y-3">
+            {navLinks.map(({ id, title, path }) => (
+              <li
+                key={id}
+                onClick={() => navigate(path)}
+                className="cursor-pointer hover:text-[#c3f1c3] transition-colors duration-300 text-base"
+              >
+                {title}
+              </li>
+            ))}
+          </ul>
+        </nav>
 
-          {/* Repeat this block for other sections */}
-          {[
-            {
-              heading: "Policies",
-              items: ["Refund Policy", "Return Policy", "Cashback Program", "Privacy Policy"],
-            },
-            {
-              heading: "Account",
-              items: ["My Account", "Wishlist", "Track Order"],
-            },
-            {
-              heading: "Major Categories",
-              items: ["Plants", "Planters & Pots", "Soil Fertilizers & Pesticides", "Seeds & Bulbs"],
-            },
-            {
-              heading: "Gifting",
-              items: ["Teachers Day Gifts", "Friendship Day Gifts", "Birthday Gifts", "Anniversary Gifts"],
-            },
-            {
-              heading: "Offers under 99",
-              items: ["Under 99 Store", "Plants Under 99", "Indoor Plants Under 99", "Flowering Plants Under 99"],
-            },
-            {
-              heading: "Offers Under 199",
-              items: ["Under 199 Store", "Plants Under 199", "Indoor Plants Under 199", "Flowering Plants Under 199"],
-            },
-            {
-              heading: "Plants",
-              items: ["Indoor Plants", "Low Maintenance Plants", "Flowering Plants", "Outdoor Plants"],
-            },
-            {
-              heading: "Planters",
-              items: ["Plastic Planters", "Ceramic Planters", "Clay Planters"],
-            },
-            {
-              heading: "Gardening Tools & Equipment",
-              items: ["Watering Tools", "Gardening Tools", "Other Gardening Essentials"],
-            },
-            {
-              heading: "Soil & Fertilizers",
-              items: ["Fertilizers", "Soil Additives", "Potting Mixes", "Pesticides & Insecticides"],
-            },
-            {
-              heading: "Home Decor Plants",
-              items: ["Indoor Home Decor Plants", "Flowering Home Decor Plants", "Outdoor Home Decor Plants"],
-            },
-            {
-              heading: "Best Sellers",
-              items: ["Tulsi", "Jades", "Pothos", "Roses"],
-            },
-            {
-              heading: "Seeds",
-              items: ["Flower Seeds", "Vegetable Seeds", "Herb Seeds"],
-            },
-            {
-              heading: "Membership & Gift Cards",
-              items: ["Membership Card", "Gift Cards"],
-            },
-          ].map((section, index) => (
-            <div key={index}>
-              <h3 className="text-[#28a745] text-base font-semibold mb-5 relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-10 after:h-0.5 after:bg-[#28a745]">
-                {section.heading}
-              </h3>
-              <ul className="space-y-2">
-                {section.items.map((item, idx) => (
-                  <li
-                    key={idx}
-                    className="text-sm text-[#495057] cursor-pointer transition-all duration-300 hover:text-[#28a745] hover:translate-x-1"
-                  >
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-
-        {/* Delivery Locations */}
-        <div className="text-[#495057] text-[15px] mt-10 pt-6 border-t border-[#e9ecef]">
-          <p>
-            <strong className="text-[#28a745] font-semibold">We deliver to:</strong> Delhi | Bangalore | Gurugram | Hyderabad | Pune | Noida
+        <div className="md:flex-1 h-fit flex flex-col justify-between max-w-md bg-white rounded-lg p-6 shadow-lg text-[#276139]">
+          <h3 className="text-[#276139] font-bold text-xl">
+            Subscribe to Our Newsletter
+          </h3>
+          <p className="mb-4 text-sm text-[#3b6b3b]">
+            Get the latest updates, exclusive deals, and gardening tips right in your inbox.
           </p>
+          <form className="flex flex-col sm:flex-row gap-4">
+            <input
+              type="email"
+              placeholder="Enter your email"
+              required
+              className="flex-grow px-4 py-3 border border-[#276139] rounded focus:outline-none focus:ring-2 focus:ring-[#3c7d3c]"
+            />
+            <button
+              type="submit"
+              className="bg-[#276139] hover:bg-[#3c7d3c] text-white font-semibold px-6 py-3 rounded transition-colors duration-300"
+            >
+              Subscribe
+            </button>
+          </form>
         </div>
+      </div>
 
-        {/* Copyright */}
-        <div className="text-[#6c757d] text-xs mt-6 pt-6 border-t border-[#e9ecef] flex flex-col gap-1 text-center">
-          <p>
-            India's Number 1 Choice for Plants | Parkkruthi India Private Limited
-          </p>
-        </div>
+      {/* Social Media Icons */}
+      <div className="max-w-[1200px] mx-auto mt-12 flex justify-center gap-8 text-white text-2xl">
+        {socialLinks.map(({ href, icon }) => (
+          <a
+            key={href}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-[#a8d5a8] transition-colors duration-300"
+            aria-label="social media link"
+          >
+            <FontAwesomeIcon icon={icon} />
+          </a>
+        ))}
+      </div>
+
+      {/* Copyright */}
+      <div className="max-w-[1200px] mx-auto mt-10 border-t border-[#3c7d3c] pt-6 text-center text-sm text-[#a8d5a8] select-none">
+        © {new Date().getFullYear()} Parkkruthi India Private Limited. All Rights Reserved.
       </div>
     </footer>
   );

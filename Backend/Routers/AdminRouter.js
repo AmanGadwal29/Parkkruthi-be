@@ -2,13 +2,13 @@ const { Router } = require("express");
 const router = Router();
 
 //! Router Handlers----------------------------
-const { addAdmin, adminLogin } = require("../Controller/AdminController");
+const controller = require("../Controller/AdminController");
 
 //! Routers----------------------------
 //? Sign Up
-router.post("/signup", addAdmin);
+router.post("/signup", controller.addAdmin);
 
 //? Log In
-router.post("/login", adminLogin);
+router.post("/login", controller.adminLogin);
 
 module.exports = router;

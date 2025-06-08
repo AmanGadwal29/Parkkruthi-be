@@ -1,0 +1,54 @@
+{
+  "pincodes": [
+    {
+      "id": 1,
+      "area": "Koramangala",
+      "pincode": "560034"
+    },
+    {
+      "id": 2,
+      "area": "Whitefield",
+      "pincode": "560066"
+    },
+    {
+      "id": 3,
+      "area": "Indiranagar",
+      "pincode": "560038"
+    },
+    {
+      "id": 4,
+      "area": "Jayanagar",
+      "pincode": "560041"
+    },
+    {
+      "id": 5,
+      "area": "HSR Layout",
+      "pincode": "560102"
+    },
+    {
+      "id": 6,
+      "area": "Electronic City",
+      "pincode": "560100"
+    },
+    {
+      "id": 7,
+      "area": "Marathahalli",
+      "pincode": "560037"
+    },
+    {
+      "id": 8,
+      "area": "BTM Layout",
+      "pincode": "560029"
+    },
+    {
+      "id": 9,
+      "area": "Rajajinagar",
+      "pincode": "560010"
+    },
+    {
+      "id": 10,
+      "area": "Malleshwaram",
+      "pincode": "560003"
+    }
+  ]
+}

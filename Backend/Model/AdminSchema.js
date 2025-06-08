@@ -22,7 +22,7 @@ AdminSchema.methods.comparePassword = async function (pass) {
 
 //! JWT Token Generation-------------------------------
 AdminSchema.methods.generateToken = async function () {
-  return jwt.sign({ id: this._id }, JWT_KEY, { expiresIn: "5h" });
+  return jwt.sign({ id: this._id }, JWT_KEY, { expiresIn: "30d" });
 };
 
 module.exports = model("Admins", AdminSchema, "Admins");

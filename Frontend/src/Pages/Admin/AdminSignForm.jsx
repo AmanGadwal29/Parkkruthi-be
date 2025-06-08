@@ -1,15 +1,18 @@
 import axios from "axios";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AdminSignForm = () => {
   const navigate = useNavigate();
-  const [adminData, setAdminData] = React.useState({
+  const [adminData, setAdminData] = useState({
     AdminName: "",
     Password: "",
   });
-  const [error, setError] = React.useState(null);
-  const [isRegistered, setIsRegistered] = React.useState(false);
+  const [error, setError] = useState(null);
+
+  const adminsApiUrl = import.meta.env.VITE_ADMINS_API;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,7 +22,7 @@ const AdminSignForm = () => {
   const SubmitHandler = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:3000/adminsapi/adminlogin", adminData);
+      const res = await axios.post(`${adminsApiUrl}/login`, adminData);
       localStorage.setItem(
         "admin",
         JSON.stringify({
@@ -28,60 +31,68 @@ const AdminSignForm = () => {
           token: res.data.token,
         })
       );
-
-      alert("Admin Logged In");
-      setIsRegistered(true);
+      toast.success("Admin Logged In", { position: "top-center" });
       navigate("/admindashboard");
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.message || "Login failed. Try again.");
     }
   };
 
   return (
-    <div
-      className={`flex justify-center items-center min-h-screen ${
-        isRegistered ? "" : ""
-      }`}
-    >
-      <form
-        className="bg-green-50 p-4 max-w-sm w-full rounded-lg shadow-md md:max-w-md lg:max-w-lg"
-        onSubmit={SubmitHandler}
-      >
-        <p className="text-xl font-semibold text-center text-green-800 mb-4">
+    <div className="h-screen w-screen flex justify-center items-center bg-gradient-to-br from-green-50 to-green-100">
+      <ToastContainer />
+      <div className="w-full max-w-sm p-6 rounded-3xl bg-white shadow-xl animate-fadeIn">
+        <h2 className="text-2xl font-bold text-green-600 text-center mb-6">
           Admin Login
-        </p>
+        </h2>
 
-        <div className="relative mb-4">
+        <form className="space-y-5" onSubmit={SubmitHandler}>
           <input
+            required
             type="text"
-            placeholder="Enter email"
             name="AdminName"
             value={adminData.AdminName}
             onChange={handleChange}
-            className="bg-white p-4 pr-12 text-sm w-full border border-gray-300 rounded-lg shadow-sm outline-none"
+            placeholder="Admin Name"
+            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
           />
-        </div>
 
-        <div className="relative mb-4">
           <input
+            required
             type="password"
-            placeholder="Enter password"
             name="Password"
             value={adminData.Password}
             onChange={handleChange}
-            className="bg-white p-4 pr-12 text-sm w-full border border-gray-300 rounded-lg shadow-sm outline-none"
+            placeholder="Password"
+            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
           />
+
+          {error && (
+            <p className="text-red-500 text-sm text-center">{error}</p>
+          )}
+
+          <button
+            type="submit"
+            className="w-full py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition"
+          >
+            Sign In
+          </button>
+        </form>
+
+        <p className="text-[10px] text-center mt-5 text-green-400">
+          <a href="#">Learn admin access policy</a>
+        </p>
+
+        {/* Back to User Login Button */}
+        <div className="mt-4 text-center">
+          <button
+            onClick={() => navigate("/login")}
+            className="text-sm text-green-600 underline hover:text-green-800 transition"
+          >
+            Login as User
+          </button>
         </div>
-
-        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-
-        <button
-          type="submit"
-          className="block w-full py-3 px-5 bg-green-800 text-white text-sm font-medium rounded-lg uppercase"
-        >
-          Sign in
-        </button>
-      </form>
+      </div>
     </div>
   );
 };
