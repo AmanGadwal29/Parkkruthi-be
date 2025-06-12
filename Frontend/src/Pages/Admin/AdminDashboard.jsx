@@ -3,10 +3,11 @@ import { Plus } from "lucide-react";
 import axios from "axios";
 
 const AdminDashboard = () => {
-  const [tab, setTab] = useState("plants");
-  const [plants, setPlants] = useState([]);
+  const [tab, setTab] = useState("");
+  const [products, setProducts] = useState({});
+  const [tabs, setTabs] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [pots, setPots] = useState([]);
+  const [allCategories, setAllCategories] = useState([]);
   const [newItem, setNewItem] = useState({
     Image: "",
     Title: "",
@@ -16,45 +17,75 @@ const AdminDashboard = () => {
     Category: "",
   });
 
-  // console.log(newItem);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get("http://localhost:8000/api/v1/products");
+        const payload = res?.data?.data?.allProducts;
+        console.log(payload);
 
-  // useEffect(() => {
-  //   // Simulated backend data
-  //   setPlants([
-  //     {
-  //       id: 1,
-  //       name: "Snake Plant",
-  //       price: "250",
-  //       description: "Air-purifying indoor plant",
-  //       stock: "15",
-  //       imagePreview: "https://via.placeholder.com/150",
-  //     },
-  //   ]);
-  //   setPots([
-  //     {
-  //       id: 1,
-  //       name: "Clay Pot",
-  //       price: "120",
-  //       description: "Traditional eco-friendly pot",
-  //       stock: "40",
-  //       imagePreview: "https://via.placeholder.com/150",
-  //     },
-  //   ]);
-  // }, []);
+        const categoryMap = {};
+        const tabSet = new Set();
+        const categoryList = new Set();
+
+        payload?.forEach((item) => {
+          const words = item.Category.trim().split(/\s+/);
+          const key = words.length > 1 ? words[words.length - 1].toLowerCase() : words[0].toLowerCase();
+          tabSet.add(key);
+          categoryList.add(item.Category);
+
+          if (!categoryMap[key]) {
+            categoryMap[key] = [];
+          }
+
+          categoryMap[key].push({
+            id: item._id,
+            name: item.Title,
+            price: item.Price,
+            description: item.Description,
+            stock: item.Stocks,
+            category: item.Category,
+          });
+        });
+
+        setProducts(categoryMap);
+        setTabs([...tabSet]);
+        setAllCategories([...categoryList]);
+        setTab([...tabSet][0]); // default to first tab
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleAdd = async () => {
-    if (!newItem.Title || newItem.Price < 1 || !newItem.Stocks < 0) {
+    if (!newItem.Title || newItem.Price < 1 || newItem.Stocks < 0 || !newItem.Category) {
       alert("Please fill all fields correctly");
       return;
     }
 
-    await axios.post("http://localhost:8000/api/v1/products");
+    await axios.post("http://localhost:8000/api/v1/products", newItem); // assuming backend handles full object
 
     const newId = Date.now();
+    const words = newItem.Category.trim().split(/\s+/);
+    const tabKey = words.length > 1 ? words[words.length - 1].toLowerCase() : words[0].toLowerCase();
+
     const newItemWithId = { id: newId, ...newItem };
 
-    if (tab === "plants") setPlants([...plants, newItemWithId]);
-    else setPots([...pots, newItemWithId]);
+    setProducts((prev) => ({
+      ...prev,
+      [tabKey]: [...(prev[tabKey] || []), newItemWithId],
+    }));
+
+    if (!tabs.includes(tabKey)) {
+      setTabs((prev) => [...prev, tabKey]);
+    }
+
+    if (!allCategories.includes(newItem.Category)) {
+      setAllCategories((prev) => [...prev, newItem.Category]);
+    }
 
     // Reset
     setNewItem({
@@ -68,7 +99,7 @@ const AdminDashboard = () => {
     setShowModal(false);
   };
 
-  const items = tab === "plants" ? plants : pots;
+  const items = products[tab] || [];
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
@@ -76,13 +107,11 @@ const AdminDashboard = () => {
 
       {/* Tabs */}
       <div className="flex gap-4 mb-6">
-        {["plants", "pots"].map((t) => (
+        {tabs.map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`px-4 py-2 rounded-full ${
-              tab === t ? "bg-green-600 text-white" : "bg-gray-200"
-            }`}
+            className={`px-4 py-2 rounded-full ${tab === t ? "bg-green-600 text-white" : "bg-gray-200"}`}
           >
             {t.charAt(0).toUpperCase() + t.slice(1)}
           </button>
@@ -94,7 +123,7 @@ const AdminDashboard = () => {
         className="flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
         onClick={() => setShowModal(true)}
       >
-        <Plus size={20} /> Add {tab === "plants" ? "Plant" : "Pot"}
+        <Plus size={20} /> Add Item
       </button>
 
       {/* List */}
@@ -104,13 +133,6 @@ const AdminDashboard = () => {
             key={item.id}
             className="border p-4 rounded shadow-sm bg-white addItemAdmin"
           >
-            {item.imagePreview && (
-              <img
-                src={item.imagePreview}
-                alt={item.name}
-                className="h-40 w-full object-cover rounded mb-3"
-              />
-            )}
             <h2 className="text-xl font-semibold">{item.name}</h2>
             <p className="text-gray-600">₹{item.price}</p>
             <p className="text-sm mt-1 text-gray-700">{item.description}</p>
@@ -123,12 +145,10 @@ const AdminDashboard = () => {
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg w-[90%] max-w-md space-y-4">
-            <h3 className="text-lg font-bold">
-              Add New {tab === "plants" ? "Plant" : "Pot"}
-            </h3>
+            <h3 className="text-lg font-bold">Add New Item</h3>
             <input
               type="text"
-              placeholder="Image Url"
+              placeholder="Image URL (optional)"
               className="w-full p-2 border rounded"
               value={newItem.Image}
               onChange={(e) =>
@@ -163,13 +183,9 @@ const AdminDashboard = () => {
               value={newItem.Price === 0 ? "" : newItem.Price}
               onChange={(e) => {
                 const value = Number(e.target.value);
-                value >= 1
-                  ? setNewItem((prev) => ({ ...prev, Price: value }))
-                  : "Price can not be less than 1";
+                setNewItem((prev) => ({ ...prev, Price: value }));
               }}
             />
-
-            {/* Image URL input instead of file upload */}
             <input
               type="number"
               placeholder="Stocks"
@@ -178,20 +194,9 @@ const AdminDashboard = () => {
               value={newItem.Stocks === 0 ? "" : newItem.Stocks}
               onChange={(e) => {
                 const value = Number(e.target.value);
-                value >= 0
-                  ? setNewItem((prev) => ({ ...prev, Stocks: value }))
-                  : "Stocks can not be less than 0";
+                setNewItem((prev) => ({ ...prev, Stocks: value }));
               }}
             />
-
-            {/* {newItem.imagePreview && (
-              <img
-                src={newItem.imagePreview}
-                alt="Preview"
-                className="h-32 object-cover rounded"
-              />
-            )} */}
-
             <select
               value={newItem.Category}
               onChange={(e) =>
@@ -200,13 +205,15 @@ const AdminDashboard = () => {
               className="w-full p-2 border rounded"
             >
               <option value="" disabled>
-                Category
+                Select Category
               </option>
-              <option value="Flower Plants">Flower Plants</option>
-              <option value="Indoor Plants">Indoor Plants</option>
-              <option value="Potted Plants">Potted Plants</option>
-              <option value="Special Plants">Special Plants</option>
+              {allCategories.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
             </select>
+
             <div className="flex justify-end gap-2 pt-2">
               <button
                 className="px-4 py-2 bg-gray-300 rounded"
