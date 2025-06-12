@@ -42,7 +42,6 @@ export const AddressProvider = ({ children }) => {
       }
 
     } catch (error) {
-      toast.error('Failed to fetch addresses');
     } finally {
       setLoading(false);
     }

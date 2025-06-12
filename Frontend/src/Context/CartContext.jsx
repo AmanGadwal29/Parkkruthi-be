@@ -26,10 +26,8 @@ export const CartProvider = ({ children }) => {
           setCart(response.data.cart.items);
           console.log(response.data);
         } else {
-          toast.error("Invalid cart data");
         }
       } catch (error) {
-        toast.error("Failed to load cart");
       }
     };
 
