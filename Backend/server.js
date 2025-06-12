@@ -3,6 +3,7 @@ const app = express();
 const mongoose = require("mongoose");
 const { PORT, URL } = require("./config");
 require("dotenv").config();
+const cartSchema = require("./Model/CartSchema")
 
 //! CORS Connection -------------------------------------------
 const cors = require("cors");
@@ -49,4 +50,6 @@ app.get("/", (req, res) => {
 //! Running the Server -------------------------------------------
 app.listen(PORT, (err) => {
   if (err) throw err;
+  console.log(`Server is running on http://localhost:${PORT}`);
+  
 });

@@ -27,7 +27,7 @@ const AdminSignForm = () => {
         "admin",
         JSON.stringify({
           role: "admin",
-          name: res.data.adminData.AdminName,
+          name: res.data.data.AdminName,
           token: res.data.token,
         })
       );
@@ -35,6 +35,7 @@ const AdminSignForm = () => {
       navigate("/admindashboard");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed. Try again.");
+      console.log(err);
     }
   };
 
@@ -67,9 +68,7 @@ const AdminSignForm = () => {
             className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
           />
 
-          {error && (
-            <p className="text-red-500 text-sm text-center">{error}</p>
-          )}
+          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
           <button
             type="submit"

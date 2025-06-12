@@ -14,10 +14,10 @@ const cartSchema = new Schema(
           type: mongoose.Schema.Types.ObjectId,
           required: true,
         },
-        productType: {
-          type: String,
-          required: true, // e.g., "Pots", "Plants"
-        },
+        // productType: {
+        //   type: String,
+        //   required: true,
+        // },
         title: { type: String },
         quantity: {
           type: Number,

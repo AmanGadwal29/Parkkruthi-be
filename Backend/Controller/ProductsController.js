@@ -32,6 +32,7 @@ exports.addProduct = async (req, res) => {
       ...payload,
       CategoryRoute: payload.Category?.toLowerCase().replace(/\s+/g, "") + "s",
       ImageURL: imageUrls,
+      ProductType: productType,
     });
 
     //fetching all subscribed users
