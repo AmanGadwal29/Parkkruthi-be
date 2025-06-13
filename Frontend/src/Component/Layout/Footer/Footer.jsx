@@ -16,11 +16,10 @@ const Footer = () => {
   const navigate = useNavigate();
 
   const navLinks = [
-    { id: 1, title: "About Us", path: "/" },
+    { id: 1, title: "About Us", path: "/aboutus" },
     { id: 2, title: "Contact Us", path: "/contact" },
     { id: 3, title: "Careers", path: "/careers" },
-    { id: 4, title: "Blogs", path: "/blogs" },
-    { id: 5, title: "Get Help", path: "/help" },
+    { id: 4, title: "Need Help?", path: "/help" },
   ];
 
   const socialLinks = [
@@ -39,11 +38,11 @@ const Footer = () => {
       <div className="max-w-[1200px] mx-auto flex flex-col md:flex-row md:justify-between gap-10">
         {/* Logo & Tagline */}
         <div className="flex flex-col md:flex-1 gap-6">
-            <img
-              src="/logo.png"
-              alt="Parkkruthi Logo"
-              className="h-40 object-contain mix-blend-multiply" 
-            />
+          <img
+            src="/logo.png"
+            alt="Parkkruthi Logo"
+            className="h-40 object-contain mix-blend-multiply"
+          />
           <p className="text-[#d0e8d0] max-w-sm leading-relaxed text-lg font-medium">
             Parkkruthi – Bringing Nature to Your Doorstep with Fresh Plants & Expert Care.
           </p>
@@ -52,7 +51,13 @@ const Footer = () => {
           <div className="space-y-2 text-sm text-[#b8d9b8]">
             <p className="flex items-center gap-3">
               <FontAwesomeIcon icon={faMapMarkerAlt} className="text-[#a2cca2]" />
-              Bangalore, Karnataka, India
+              <a
+                href="https://www.google.com/maps?q=Parkkruthi,+Bangalore,+Karnataka"
+                target="_blank" className="hover:underline underline-offset-2"
+                rel="noopener noreferrer"
+              >
+                Bangalore, Karnataka, India
+              </a>
             </p>
             <p className="flex items-center gap-3">
               <FontAwesomeIcon icon={faPhone} className="text-[#a2cca2]" />
@@ -75,7 +80,7 @@ const Footer = () => {
               <li
                 key={id}
                 onClick={() => navigate(path)}
-                className="cursor-pointer hover:text-[#c3f1c3] transition-colors duration-300 text-base"
+                className="cursor-pointer hover:text-[#c3f1c3] transition-colors duration-300 text-base hover:underline underline-offset-4"
               >
                 {title}
               </li>
@@ -99,7 +104,7 @@ const Footer = () => {
             />
             <button
               type="submit"
-              className="bg-[#276139] hover:bg-[#3c7d3c] text-white font-semibold px-6 py-3 rounded transition-colors duration-300"
+              className="bg-[#3c7d3c] hover:bg-[#276139] text-white font-semibold px-6 py-3 rounded transition-colors duration-300"
             >
               Subscribe
             </button>

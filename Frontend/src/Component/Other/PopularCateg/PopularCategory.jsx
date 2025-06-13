@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const PopularCategory = () => {
-  // Hardcoded data to simulate API response
   const popularCategoriesData = [
     {
       id: 1,
@@ -34,28 +33,15 @@ const PopularCategory = () => {
     },
   ];
 
-  // State for categories (empty initially)
   const [popularCategories, setPopularCategories] = useState([]);
 
-  // Simulate fetching data
   useEffect(() => {
-    // Uncomment and replace with your real API call
-    /*
-    fetch('https://your-api-endpoint.com/popular-categories')
-      .then(res => res.json())
-      .then(data => setPopularCategories(data))
-      .catch(err => console.error(err));
-    */
-
-    // Simulate delay then load data
     const timer = setTimeout(() => {
       setPopularCategories(popularCategoriesData);
     }, 1500);
-
     return () => clearTimeout(timer);
   }, []);
 
-  // Shimmer CSS
   const shimmerStyle = `
     .shimmer {
       position: relative;
@@ -84,15 +70,17 @@ const PopularCategory = () => {
     <>
       <style>{shimmerStyle}</style>
 
-      <div className="w-full mx-auto py-8 px-4">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+      <section className="w-full bg-[#f5f5f5] py-16 px-4 sm:px-8 lg:px-16 font-sans">
+        <h2 className="text-3xl sm:text-4xl font-bold text-center text-[#1B3C2E] tracking-wide mb-4 leading-snug">
           Popular Categories
-        </h1>
+        </h2>
+        <p className="text-center text-gray-600 text-base sm:text-lg max-w-2xl mx-auto mb-10 font-normal">
+          Find top trending plant types, pots, and garden essentials chosen by customers.
+        </p>
 
         <div className="flex flex-wrap justify-center gap-5 sm:gap-6">
           {popularCategories.length === 0
-            ? // Show shimmer placeholders while loading
-              popularCategoriesData.map((_, idx) => (
+            ? popularCategoriesData.map((_, idx) => (
                 <div
                   key={idx}
                   className="h-44 w-72 rounded-xl bg-gray-200 relative overflow-hidden flex flex-col justify-between p-6 shimmer"
@@ -103,21 +91,22 @@ const PopularCategory = () => {
                   <div className="h-8 rounded-md w-24 bg-gray-200" />
                 </div>
               ))
-            : // Show actual data after load
-              popularCategories.map((category) => (
+            : popularCategories.map((category) => (
                 <div
                   key={category.id}
-                  className="outline h-44 w-72 rounded-xl bg-cover bg-center bg-no-repeat text-white shadow-md relative cursor-pointer"
+                  className=" h-44 w-72 rounded-xl bg-cover bg-center bg-no-repeat text-white shadow-md relative cursor-pointer "
                   style={{ backgroundImage: `url(${category.image})` }}
                 >
                   <div className="h-full w-full bg-black/45 rounded-xl flex flex-col items-start justify-between p-6 relative z-10">
-                    <h1 className="text-center font-semibold text-white text-xl mt-1">
+                    <h3 className="text-lg font-semibold text-white tracking-wide">
                       {category.name}
-                    </h1>
-                    <p className="text-xs">{category.description}</p>
+                    </h3>
+                    <p className="text-xs leading-tight">
+                      {category.description}
+                    </p>
                     <Link
                       to={category.path}
-                      className="border-2 rounded-md cursor-pointer py-1 px-3 text-sm hover:bg-black hover:bg-opacity-45"
+                      className="border-2 border-white rounded-md cursor-pointer py-1 px-3 text-sm font-medium text-white hover:bg-[#1f1e1e] hover:bg-opacity-10 transition"
                     >
                       Buy Now
                     </Link>
@@ -125,7 +114,7 @@ const PopularCategory = () => {
                 </div>
               ))}
         </div>
-      </div>
+      </section>
     </>
   );
 };

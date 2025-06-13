@@ -4,10 +4,16 @@ import { toast } from "react-toastify";
 
 const CartContext = createContext();
 const CART_API = import.meta.env.VITE_CART_API;
+const PRODUCT_API = import.meta.env.VITE_PRODUCTS_API;
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
+  const [cartCount, setCartCount] = useState(0);
+  const [loggedIn, setLoggedIn] = useState(false);
   const token = JSON.parse(localStorage.getItem("user"))?.token;
+  const [stock, setStock] = useState(0);
+  const [allProducts, setAllProducts] = useState([]);
+
 
   const axiosConfig = {
     headers: {
@@ -17,57 +23,70 @@ export const CartProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    const fetchProducts = async () => {
+      let res = await axios.get(PRODUCT_API);
+      let products = res?.data?.data?.allProducts;
+      setAllProducts(products);
+    }
+
+    fetchProducts();
+  }, [loggedIn])
+
+  useEffect(() => {
     const fetchCart = async () => {
+      setCartCount(0);
       if (!token) return;
       try {
         const response = await axios.get(CART_API, axiosConfig);
-
         if (Array.isArray(response.data.cart.items)) {
           setCart(response.data.cart.items);
-          console.log(response.data);
-        } else {
         }
       } catch (error) {
+        console.log(error);
       }
     };
 
     fetchCart();
-  }, []);
+  }, [loggedIn]);
+
+  useEffect(() => {
+    const count = cart.reduce((acc, item) => acc + item.quantity, 0);
+    setCartCount(count);
+  }, [cart]);
 
   const getStock = (id) => {
-    return cart.find((item) => item.id === id)?.stocks;
+    return allProducts.find((item) => item._id === id)?.Stocks;
   };
 
-  const addToCart = async (product) => {
-    console.log(product);
+  const getItemQuantity = (id) => {
+    return cart.find((item) => item.productId === id)?.quantity || 0;
+  };
 
-    const exists = cart.find((item) => item.id === product.id);
-    if (!exists) {
-      const updatedCart = [...cart, { ...product, quantity: 1 }];
-      setCart(updatedCart);
-
-      try {
-        await axios.post(
-          CART_API,
-          {
-            productId: product.id,
-            quantity: 1,
-            // productType: product.productType,
-            title: product.title,
-            price: product.price,
-          },
-          axiosConfig
-        );
-      } catch (error) {
-        toast.error("Failed to add to cart");
-        setCart(cart); // rollback
-      }
+  const addToCart = async (product, qty) => {
+    try {
+      const res = await axios.post(
+        CART_API,
+        {
+          productId: product.id,
+          title: product.title,
+          price: product.price,
+          quantity: qty,
+        },
+        axiosConfig
+      );
+      setCart(res?.data?.cart?.items);
+    } catch (error) {
+      console.error("Add to cart failed:", error);
+      toast.error("Could not add to cart");
     }
   };
+
+
 
   const removeFromCart = async (id) => {
     const updatedCart = cart.filter((item) => item.id !== id);
     setCart(updatedCart);
+
     try {
       await axios.delete(CART_API, {
         ...axiosConfig,
@@ -79,53 +98,40 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const updateQuantity = async (id, amount) => {
-    const updatedCart = cart
-      .map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + amount } : item
-      )
-      .filter((item) => item.quantity > 0);
+  const updateQuantity = async (productId, change) => {
+    let stock = getStock(productId);
+    const currentQty = getItemQuantity(productId);
+    const newQty = currentQty + change;
 
-    const newQuantity =
-      updatedCart.find((item) => item.id === id)?.quantity || 0;
-
-    setCart(updatedCart);
-
+    if (newQty > stock) {
+      return;
+    }
     try {
-      await axios.put(
+      const res = await axios.put(
         CART_API,
-        {
-          productId: id,
-          quantity: newQuantity,
-        },
+        { productId, quantity: newQty },
         axiosConfig
       );
-    } catch (error) {
-      toast.error("Failed to update quantity");
-      setCart(cart);
+      setCart(res.data.cart.items);
+    } catch (err) {
+      console.error("Update quantity error:", err);
     }
   };
 
-  const getItemQuantity = (id) => {
-    const item = cart.find((item) => item.id === id);
-    return item ? item.quantity : 0;
-  };
 
-  const getTotalItemsCount = () => {
-    return cart.reduce((total, item) => total + item.quantity, 0);
-  };
-  console.log(cart);
 
   return (
     <CartContext.Provider
       value={{
         cart,
+        cartCount,
         addToCart,
         getStock,
+        getItemQuantity,
         removeFromCart,
         updateQuantity,
-        getItemQuantity,
-        getTotalItemsCount,
+        setLoggedIn,
+        loggedIn,
       }}
     >
       {children}

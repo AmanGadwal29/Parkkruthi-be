@@ -76,7 +76,7 @@ const DropdownNav = () => {
                   className="text-xs transform group-hover:rotate-180 transition-transform duration-300"
                 />
               </div>
-              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-[260px] bg-[#276139] rounded shadow-lg py-3 px-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-200">
+              <div className="absolute top-[104%] left-1/2 transform -translate-x-1/2 w-[260px] bg-[#276139] rounded shadow-lg py-3 px-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                 <ul className="flex flex-col gap-2">
                   {subcategories.map(({ label, path }) => (
                     <li key={label}>

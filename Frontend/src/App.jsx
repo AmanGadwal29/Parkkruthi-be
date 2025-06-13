@@ -19,6 +19,9 @@ import ScrollToTop from "./Utils/ScrollToTop.jsx";
 import { useAddress } from './Context/AddressContext.jsx';
 import AddressModal from './Pages/Address/AddressModal.jsx';
 import WhatsappButton from './Component/WhatsappButton.jsx';
+import RedirectIfLoggedIn from './Utils/RedirectIfLoggedIn.jsx';
+import NotFound from './Pages/NotFound.jsx';
+import AboutUs from './Pages/AboutUs.jsx';
 // import AddressManager from './Pages/Address/AddressManager.jsx';
 
 function App() {
@@ -34,16 +37,43 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         {/* Admin and User */}
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/adminlogin" element={<AdminLogin />} />
+        <Route
+          path="/register"
+          element={
+            <RedirectIfLoggedIn>
+              <Register />
+            </RedirectIfLoggedIn>
+          }
+        />
+
+        <Route
+          path="/login"
+          element={
+            <RedirectIfLoggedIn>
+              <Login />
+            </RedirectIfLoggedIn>
+          }
+        />
+
+        <Route
+          path="/adminlogin"
+          element={
+            <RedirectIfLoggedIn>
+              <AdminLogin />
+            </RedirectIfLoggedIn>
+          }
+        />
+
         <Route path="/admindashboard" element={<AdminDashboard />} />
+
+
+        <Route path="/help" element={<Help />} />
+        <Route path="/aboutus" element={<AboutUs />} />
 
         {/* Products */}
         <Route path="/:productType/category/:category" element={<CardsHomePage />} />
         <Route path="/:productType" element={<CardsHomePage />} />
         <Route path="/:productType/:id" element={<ProductDetails />} />
-        <Route path="/help" element={<Help />} />
         <Route
           path="/cart"
           element={
@@ -69,6 +99,7 @@ function App() {
             </AdminProtectedRoute>
           }
         />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
       <WhatsappButton />

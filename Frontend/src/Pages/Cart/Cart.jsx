@@ -9,8 +9,10 @@ const Cart = () => {
     removeFromCart,
     updateQuantity,
     getItemQuantity,
-    getTotalItemsCount,
+    cartCount,
   } = useCart();
+
+  console.log(cart);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [productToRemove, setProductToRemove] = useState(null);
@@ -69,7 +71,7 @@ const Cart = () => {
         <section className="flex-1 space-y-8">
           {cart.map((item) => (
             <CartItem
-              key={item.id}
+              key={item.productId}
               item={item}
               updateQuantity={updateQuantity}
               getItemQuantity={getItemQuantity}
@@ -85,7 +87,7 @@ const Cart = () => {
           </h2>
           <div className="flex justify-between text-gray-700 mb-4 font-medium text-lg">
             <span>Total Items</span>
-            <span>{getTotalItemsCount()}</span>
+            <span>{cartCount}</span>
           </div>
           <div className="flex justify-between mb-10 text-gray-900 font-extrabold text-2xl">
             <span>Total Price</span>

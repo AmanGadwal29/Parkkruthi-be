@@ -1,8 +1,10 @@
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const Sidebar = () => {
+  const location = useLocation();
   const [accordionOpen, setAccordionOpen] = useState({});
+
   const Category = {
     Plants: {
       "Flower Plants": { path: "/plants/category/flowerplants" },
@@ -20,71 +22,97 @@ const Sidebar = () => {
     }
   };
 
-  const toggleAccordion = (key) => {
-    setAccordionOpen((prev) => ({ ...prev, [key]: !prev[key] }));
+  useEffect(() => {
+    const openState = {};
+    Object.entries(Category).forEach(([category, subcategories]) => {
+      const isMatch = Object.values(subcategories).some(({ path }) =>
+        location.pathname.startsWith(path)
+      );
+      openState[category] = isMatch;
+    });
+    setAccordionOpen(openState);
+  }, [location.pathname]);
+
+  const handleMouseEnter = (category) => {
+    setAccordionOpen((prev) => ({ ...prev, [category]: true }));
+  };
+
+  const handleMouseLeave = (category) => {
+    const isActive = Object.values(Category[category]).some(({ path }) =>
+      location.pathname.startsWith(path)
+    );
+    if (!isActive) {
+      setAccordionOpen((prev) => ({ ...prev, [category]: false }));
+    }
   };
 
   return (
     <div>
-      {/* Sidebar - visible only on large screens and above */}
       <div
-        className="hs-overlay lg:block hidden w-64 transition-all duration-300 transform bg-white border-e h-full border-gray-200 dark:bg-neutral-800 dark:border-neutral-700"
+        className="hs-overlay lg:block hidden w-64 transition-all duration-300 transform bg-[#276139] text-white border-e h-full border-[#1d4d31]"
         role="dialog"
         tabIndex={-1}
         aria-label="Sidebar"
       >
         <div className="relative flex flex-col h-full max-h-full">
-          {/* Header */}
           <header className="p-4 flex justify-between items-center gap-x-2">
-            <h2 className="text-xl font-semibold text-black dark:text-white">
-              Categories
-            </h2>
+            <h2 className="text-xl font-semibold">Categories</h2>
           </header>
 
-          {/* Body */}
-          <nav className="h-full overflow-y-auto px-2 pb-4 custom-scrollbar">
+          <nav className="h-full overflow-y-auto px-3 pb-4 custom-scrollbar">
             <ul className="space-y-1">
-              {Object.entries(Category).map(([category, subcategories]) => (
-                <li key={category}>
-                  <button
-                    className="w-full flex items-center justify-between py-2 px-3 text-sm text-gray-800 rounded-lg hover:bg-gray-100 dark:text-neutral-200 dark:hover:bg-neutral-700"
-                    onClick={() => toggleAccordion(category)}
-                  >
-                    {category}
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      viewBox="0 0 24 24"
-                    >
-                      {accordionOpen[category] ? (
-                        <path d="m18 15-6-6-6 6" />
-                      ) : (
-                        <path d="m6 9 6 6 6-6" />
-                      )}
-                    </svg>
-                  </button>
+              {Object.entries(Category).map(([category, subcategories]) => {
+                const isOpen = accordionOpen[category];
 
-                  {accordionOpen[category] &&
-                    Object.keys(subcategories).length > 0 && (
-                      <ul className="pl-4 space-y-1">
-                        {Object.keys(subcategories).map((subcategory) => (
+                return (
+                  <li
+                    key={category}
+                    onMouseEnter={() => handleMouseEnter(category)}
+                    onMouseLeave={() => handleMouseLeave(category)}
+                  >
+                    <div className="w-full flex items-center justify-between py-2 px-3 text-sm rounded-lg hover:bg-[#2a7c4c] transition-colors cursor-pointer">
+                      <span>{category}</span>
+                      <svg
+                        className={`w-4 h-4 transition-transform duration-300 ${
+                          isOpen ? "rotate-180" : ""
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="m6 9 6 6 6-6" />
+                      </svg>
+                    </div>
+
+                    {/* Accordion with slow transition */}
+                    <div
+                      className={`overflow-hidden transition-all duration-700 ease-in-out ${
+                        isOpen ? "max-h-96 opacity-100 scale-y-100" : "max-h-0 opacity-0 scale-y-95"
+                      }`}
+                    >
+                      <ul className="pl-4 py-2 space-y-1">
+                        {Object.entries(subcategories).map(([subcategory, { path }]) => (
                           <li key={subcategory}>
                             <Link
-                              to={subcategories[subcategory].path}
-                              className="block py-2 px-3 text-sm text-gray-800 hover:bg-gray-100 dark:text-neutral-200 dark:hover:bg-neutral-700 rounded-lg"
+                              to={path}
+                              className={`block py-2 px-3 text-sm rounded-lg transition-all duration-300 ${
+                                location.pathname === path
+                                  ? "bg-green-700 text-white"
+                                  : "text-[#d6f0d6] hover:bg-[#378b5a] hover:text-white hover:pl-4"
+                              }`}
                             >
                               {subcategory}
                             </Link>
                           </li>
                         ))}
                       </ul>
-                    )}
-                </li>
-              ))}
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           </nav>
         </div>
