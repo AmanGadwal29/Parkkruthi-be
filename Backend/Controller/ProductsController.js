@@ -24,7 +24,7 @@ exports.addProduct = async (req, res) => {
   try {
     const productType = req.params.productType;
     const payload = req.body;
-    const imageUrls = req.files.map((file) => file.path);
+    const imageUrls = req?.files?.map((file) => file.path);
 
     const product = schemaManager(productType);
 

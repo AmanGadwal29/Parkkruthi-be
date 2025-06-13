@@ -6,11 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const AdminSignForm = () => {
   const navigate = useNavigate();
-  const [adminData, setAdminData] = useState({
-    AdminName: "",
-    Password: "",
-  });
-  const [error, setError] = useState(null);
+  const [adminData, setAdminData] = useState({ AdminName: "", Password: "" });
 
   const adminsApiUrl = import.meta.env.VITE_ADMINS_API;
 
@@ -21,21 +17,30 @@ const AdminSignForm = () => {
 
   const SubmitHandler = async (e) => {
     e.preventDefault();
+    const loginPromise = axios.post(`${adminsApiUrl}/login`, adminData);
+
+    toast.promise(
+      loginPromise,
+      {
+        pending: "Logging in as admin...",
+        success: "Admin login successful!",
+        error: "Login failed. Please check credentials.",
+      },
+      { position: "top-right" }
+    );
+
     try {
-      const res = await axios.post(`${adminsApiUrl}/login`, adminData);
+      const res = await loginPromise;
+      const { token, data } = res.data;
+
       localStorage.setItem(
-        "admin",
-        JSON.stringify({
-          role: "admin",
-          name: res.data.data.AdminName,
-          token: res.data.token,
-        })
+        "auth",
+        JSON.stringify({ type: "admin", name: data.AdminName })
       );
-      toast.success("Admin Logged In", { position: "top-center" });
-      navigate("/admindashboard");
+      localStorage.setItem("isAuthenticated", "true");
+      navigate("/admindashboard", { replace: true });
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed. Try again.");
-      console.log(err);
+      console.error("Admin login failed:", err);
     }
   };
 
@@ -46,7 +51,6 @@ const AdminSignForm = () => {
         <h2 className="text-2xl font-bold text-green-600 text-center mb-6">
           Admin Login
         </h2>
-
         <form className="space-y-5" onSubmit={SubmitHandler}>
           <input
             required
@@ -57,7 +61,6 @@ const AdminSignForm = () => {
             placeholder="Admin Name"
             className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
           />
-
           <input
             required
             type="password"
@@ -67,9 +70,6 @@ const AdminSignForm = () => {
             placeholder="Password"
             className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
           />
-
-          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-
           <button
             type="submit"
             className="w-full py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition"
@@ -77,12 +77,10 @@ const AdminSignForm = () => {
             Sign In
           </button>
         </form>
-
         <p className="text-[10px] text-center mt-5 text-green-400">
           <a href="#">Learn admin access policy</a>
         </p>
 
-        {/* Back to User Login Button */}
         <div className="mt-4 text-center">
           <button
             onClick={() => navigate("/login")}

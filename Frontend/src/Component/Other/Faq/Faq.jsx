@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Plus } from "lucide-react"; // Lucide Plus icon
 
 const faqData = [
   {
@@ -13,6 +14,34 @@ const faqData = [
     question: "How can I track my order?",
     answer: "Once shipped, you will receive a tracking number via email.",
   },
+  {
+    question: "How do I care for the plants I purchase?",
+    answer: "Each plant comes with a detailed care guide, and you can also find tips in our blog section.",
+  },
+  {
+    question: "What if the plant gets damaged during delivery?",
+    answer: "If your plant arrives damaged, contact our support within 48 hours with photos, and we’ll arrange a replacement or refund.",
+  },
+  {
+    question: "Can I cancel my order after placing it?",
+    answer: "Yes, orders can be canceled within 2 hours of placement or before they are shipped, whichever is earlier.",
+  },
+  {
+    question: "Do I need an account to shop?",
+    answer: "Yes, you need to log in or register to make a purchase, add addresses, or track orders.",
+  },
+  {
+    question: "Are there any offers for bulk or corporate orders?",
+    answer: "Yes, we offer custom quotes and discounts for bulk or corporate gifting. Please contact our sales team via the Contact page.",
+  },
+  {
+    question: "What payment methods do you accept?",
+    answer: "We accept UPI, credit/debit cards, net banking, and wallet payments through secure gateways.",
+  },
+  {
+    question: "Do you provide gardening tools and accessories?",
+    answer: "Yes, we offer a variety of tools, pots, planters, and organic fertilizers to support your gardening journey.",
+  },
 ];
 
 const Faq = () => {
@@ -23,11 +52,14 @@ const Faq = () => {
   };
 
   return (
-    <section className="w-full px-4 md:px-20 py-16 bg-[#f9fafb]">
+    <section className="w-full px-4 sm:px-8 lg:px-16 py-16 bg-[#f5fdf6] font-sans">
       <div className="max-w-5xl mx-auto">
-        <h2 className="text-4xl font-extrabold text-center text-gray-900 mb-12">
+        <h2 className="text-3xl sm:text-4xl font-bold text-center text-[#1B3C2E] tracking-wide mb-4 leading-snug">
           Frequently Asked Questions
         </h2>
+        <p className="text-center text-gray-600 text-base sm:text-lg max-w-2xl mx-auto mb-10 font-normal">
+          Answers to common queries about orders, returns, and plant care to guide your green journey.
+        </p>
 
         <div className="space-y-6">
           {faqData.map(({ question, answer }, index) => {
@@ -36,7 +68,7 @@ const Faq = () => {
             return (
               <div
                 key={index}
-                className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300"
+                className="bg-white border border-green-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300"
               >
                 <button
                   onClick={() => toggleFAQ(index)}
@@ -44,21 +76,16 @@ const Faq = () => {
                   aria-expanded={isOpen}
                   aria-controls={`faq-answer-${index}`}
                 >
-                  <span className="text-lg font-medium text-gray-800">{question}</span>
-
-                  {/* Plus icon turns to cross on open */}
-                  <span className="relative w-5 h-5">
-                    <span
-                      className={`absolute w-full h-0.5 bg-gray-800 left-0 top-1/2 transform -translate-y-1/2 transition-transform duration-300 ${
-                        isOpen ? "rotate-45" : "rotate-0"
-                      }`}
-                    />
-                    <span
-                      className={`absolute h-full w-0.5 bg-gray-800 left-1/2 top-0 transform -translate-x-1/2 transition-transform duration-300 ${
-                        isOpen ? "rotate-45" : "rotate-0"
-                      }`}
-                    />
+                  <span className="text-lg font-medium text-green-900">
+                    {question}
                   </span>
+
+                  <Plus
+                    size={28}
+                    className={`transition-transform duration-300 transform ${
+                      isOpen ? "rotate-45 text-green-700" : "rotate-0 text-green-900"
+                    }`}
+                  />
                 </button>
 
                 <div
@@ -68,7 +95,9 @@ const Faq = () => {
                   }`}
                 >
                   <div className="overflow-hidden">
-                    <p className="text-base text-gray-700 leading-relaxed">{answer}</p>
+                    <p className="text-base text-green-800 leading-relaxed">
+                      {answer}
+                    </p>
                   </div>
                 </div>
               </div>

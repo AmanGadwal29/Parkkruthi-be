@@ -42,7 +42,7 @@ const testimonials = [
 const renderStars = (count) => {
   const total = 5;
   return (
-    <div className="flex text-[#2C6D31] text-lg">
+    <div className="flex text-[#2C6D31] text-lg mb-2">
       {[...Array(total)].map((_, i) => (
         <span key={i}>{i < count ? "★" : "☆"}</span>
       ))}
@@ -52,10 +52,13 @@ const renderStars = (count) => {
 
 function Testimonials() {
   return (
-    <section className="w-full bg-[#f5f7f5] py-16 px-4 md:px-10">
-      <h2 className="text-4xl font-extrabold text-center text-[#1B3C2E] mb-12">
+    <section className="w-full bg-[#f5f7f5] pt-6 pb-16 px-4 sm:px-8 lg:px-16 font-sans">
+      <h2 className="text-3xl sm:text-4xl font-bold text-center text-[#1B3C2E] tracking-wide mb-4 leading-snug">
         What Our Gardeners Say
       </h2>
+      <p className="text-center text-gray-600 text-base sm:text-lg max-w-2xl mx-auto mb-10 font-normal">
+        Real stories from happy gardeners who trusted us to green their spaces.
+      </p>
 
       <Swiper
         loop={true}
@@ -74,15 +77,15 @@ function Testimonials() {
         {testimonials.map((item, index) => (
           <SwiperSlide key={index}>
             <div className="flex justify-center">
-              <div className="w-full max-w-sm min-h-[250px] bg-white border border-green-100 rounded-2xl shadow-md p-6 flex flex-col justify-between">
-                <div className="">
+              <div className="w-full max-w-sm min-h-[250px] bg-white border border-[#E6F4EA] rounded-2xl shadow-sm hover:shadow-lg transition-shadow duration-300 p-6 flex flex-col justify-between gap-4">
+                <div>
                   {renderStars(item.stars)}
-                </div>
-                <p className="text-gray-700 text-base leading-relaxed italic line-clamp-4">
+                  <p className="text-gray-700 text-base leading-relaxed italic line-clamp-4 mt-2">
                     “{item.desc}”
                   </p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#2C6D31] text-white flex items-center justify-center font-semibold text-sm">
+                </div>
+                <div className="flex items-center gap-3 mt-4">
+                  <div className="w-10 h-10 rounded-full bg-[#2C6D31] text-white flex items-center justify-center font-semibold text-sm uppercase">
                     {item.client_name.charAt(0)}
                   </div>
                   <span className="text-sm font-medium text-[#2C6D31]">

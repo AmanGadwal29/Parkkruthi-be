@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import NotificationPopup from "../../Component/Other/NotificationPopup";
 import { jwtDecode } from "jwt-decode"; 
 import { useAddress } from "../../Context/AddressContext";
+import { useCart } from "../../context/CartContext";
 
 const Form = () => {
   const [user, setUser] = useState({ Name: "", Password: "" });
@@ -16,6 +17,7 @@ const Form = () => {
   const subscriptionApiUrl = import.meta.env.VITE_SUBSCRIPTION_API;
 
   const { address, setShowAddressModal } = useAddress();
+  const { setLoggedIn } = useCart();
 
   useEffect(() => {
     const fetchKey = async () => {
@@ -51,6 +53,8 @@ const Form = () => {
 
       if (res.data.status === "Success") {
         const userData = res.data.data;
+        console.log(userData);
+        setLoggedIn(prev=>!prev);
         localStorage.setItem("user", JSON.stringify({...userData,token}));
         localStorage.setItem("isAuthenticated", true);
         setShowNotificationPopup(true);
@@ -150,7 +154,7 @@ const subscribeForPushNotifications = async () => {
   const handleDeclineNotifications = () => {
     setShowNotificationPopup(false);
     toast.info("Notifications declined.", { position: "top-right" });
-     navigate("/")
+     navigate("/", { replace: true })
   };
 
   return (

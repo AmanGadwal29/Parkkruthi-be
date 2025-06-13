@@ -58,12 +58,14 @@ const SocialLinks = () => {
 
 const Navbar = () => {
   const [userName, setUserName] = useState("");
-  const { getTotalItemsCount } = useCart();
-
+  const [adminName, setAdminName] = useState("");
+  const [admin, setAdmin] = useState('')
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showSelector, setShowSelector] = useState(false);
+  
+  const { cartCount, loggedIn, setLoggedIn } = useCart();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -79,7 +81,16 @@ const Navbar = () => {
       const parsedUser = JSON.parse(storedUser);
       setUserName(parsedUser.UserName);
     }
-  }, []);
+
+    const storedAuth = localStorage.getItem("auth");
+    if (storedAuth) {
+      const parsedAuth = JSON.parse(storedAuth);
+      if (parsedAuth.type === "admin") {
+        setAdminName(parsedAuth.name);
+        setAdmin(parsedAuth.type)
+      }
+    }
+  }, [loggedIn]);
 
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
@@ -92,9 +103,12 @@ const Navbar = () => {
 
   const handleLogoutConfirm = () => {
     setShowLogoutModal(false);
+    setLoggedIn(prev=>!prev);
     setUserName("");
+    setAdminName("");
     localStorage.removeItem("isAuthenticated");
     localStorage.removeItem("user");
+    localStorage.removeItem("auth");
     localStorage.removeItem("defaultAddressId");
     navigate("/login");
   };
@@ -114,6 +128,10 @@ const Navbar = () => {
             {userName ? (
               <span className="text-yellow-300">
                 {", " + userName.charAt(0).toUpperCase() + userName.slice(1)}
+              </span>
+            ) : adminName ? (
+              <span className="text-yellow-300">
+                {", " + adminName.charAt(0).toUpperCase() + adminName.slice(1)}
               </span>
             ) : (
               ""
@@ -136,7 +154,7 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* Location - show on md+ */}
+        {/* Location */}
         <div className="hidden md:flex items-center gap-2 text-gray-700 flex-shrink-0 whitespace-nowrap">
           <FontAwesomeIcon icon={faMapMarkerAlt} className="text-[#276139]" />
           <span className="text-sm md:text-base">
@@ -175,6 +193,15 @@ const Navbar = () => {
             Help
           </Link>
 
+          {adminName && (
+            <Link
+              to="/admindashboard"
+              className="px-3 sm:px-6 py-2 text-sm sm:text-base font-medium border border-[#276139] text-[#276139] rounded-md hover:bg-[#e6f5f5] transition-all"
+            >
+              Dashboard
+            </Link>
+          )}
+
           {isAuthenticated ? (
             <button
               onClick={handleLogoutClick}
@@ -191,22 +218,24 @@ const Navbar = () => {
             </Link>
           )}
 
-          <Link to="/cart" className="relative ml-1 sm:ml-2">
-            <FontAwesomeIcon
-              icon={faShoppingCart}
-              className="text-[#276139] text-xl sm:text-2xl hover:scale-110 transition-transform duration-300 drop-shadow-sm"
-              aria-label="Cart"
-            />
-            <span
-              className={`absolute -top-2 -right-2 text-xs sm:text-sm w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-md ${
-                getTotalItemsCount() === 0
-                  ? "bg-red-600 text-white"
-                  : "bg-[#4aba6b] text-white"
-              }`}
-            >
-              {getTotalItemsCount()}
-            </span>
-          </Link>
+          {admin !== "admin" && (
+            <Link to="/cart" className="relative ml-1 sm:ml-2">
+              <FontAwesomeIcon
+                icon={faShoppingCart}
+                className="text-[#276139] text-xl sm:text-2xl hover:scale-110 transition-transform duration-300 drop-shadow-sm"
+                aria-label="Cart"
+              />
+              <span
+                className={`absolute -top-2 -right-2 text-xs sm:text-sm w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-md ${cartCount === 0
+                    ? "bg-red-600 text-white"
+                    : "bg-[#4aba6b] text-white"
+                  }`}
+              >
+                {cartCount}
+              </span>
+            </Link>
+          )}
+
         </div>
       </div>
 

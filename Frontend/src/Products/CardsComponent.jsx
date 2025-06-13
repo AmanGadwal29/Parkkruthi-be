@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import ProductCard from "./ProductCard.jsx";
-import Shimmer from "./Shimmer.jsx";
 
 const CardsComponent = ({ Categories, loading, error }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -15,7 +14,52 @@ const CardsComponent = ({ Categories, loading, error }) => {
 
   const totalPages = Math.ceil(Categories.length / itemsPerPage);
 
-  if (loading) return <Shimmer />;
+  // Skeleton shimmer style
+  const shimmerStyle = `
+    .shimmer {
+      position: relative;
+      overflow: hidden;
+      background: #f6f7f8;
+      background-image: linear-gradient(
+        90deg,
+        #f6f7f8 0px,
+        #edeef1 40px,
+        #f6f7f8 80px
+      );
+      background-size: 600px 100%;
+      animation: shimmer 1.5s infinite linear;
+    }
+    @keyframes shimmer {
+      0% {
+        background-position: -600px 0;
+      }
+      100% {
+        background-position: 600px 0;
+      }
+    }
+  `;
+
+  const ProductCardSkeleton = () => (
+    <div className="rounded-lg border shadow-md p-4 shimmer flex flex-col gap-4 h-72 w-full sm:w-auto">
+      <div className="h-36 bg-gray-300 rounded-lg"></div>
+      <div className="h-5 w-3/4 bg-gray-300 rounded"></div>
+      <div className="h-4 w-2/3 bg-gray-300 rounded"></div>
+      <div className="h-6 w-1/3 bg-gray-300 rounded"></div>
+    </div>
+  );
+
+  if (loading) {
+    return (
+      <>
+        <style>{shimmerStyle}</style>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 p-2 sm:p-4">
+          {Array.from({ length: 6 }).map((_, idx) => (
+            <ProductCardSkeleton key={idx} />
+          ))}
+        </div>
+      </>
+    );
+  }
 
   if (error || Categories.length === 0) {
     return (
@@ -32,6 +76,8 @@ const CardsComponent = ({ Categories, loading, error }) => {
 
   return (
     <div className="w-full h-fit relative">
+      <style>{shimmerStyle}</style>
+
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 p-2 sm:p-4">
         {displayCategories.map((category) => (
           <ProductCard
