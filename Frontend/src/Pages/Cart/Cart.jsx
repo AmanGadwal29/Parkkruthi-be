@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import CartItem from "./CartItem";
 
@@ -16,14 +16,16 @@ const Cart = () => {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [productToRemove, setProductToRemove] = useState(null);
+  const navigate = useNavigate();
 
   const totalPrice = cart.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
   );
 
-  const openModal = (product) => {
-    setProductToRemove(product);
+  const openModal = (id) => {
+    console.log(id);
+    setProductToRemove(id);
     setModalOpen(true);
   };
 
@@ -34,7 +36,7 @@ const Cart = () => {
 
   const confirmRemove = () => {
     if (productToRemove) {
-      removeFromCart(productToRemove.id);
+      removeFromCart(productToRemove);
       closeModal();
     }
   };
@@ -62,7 +64,7 @@ const Cart = () => {
   }
 
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-8 py-10 relative">
+    <main className="max-w-7xl min-h-[70vh] mx-auto px-4 sm:px-8 py-10 relative">
       <h1 className="text-4xl font-extrabold text-[#276139] mb-12 select-none text-center sm:text-left">
         Your Shopping Cart
       </h1>
@@ -81,25 +83,54 @@ const Cart = () => {
         </section>
 
         {/* Summary Section */}
-        <aside className="w-full md:w-80 bg-white bg-opacity-95 backdrop-blur-lg shadow-xl p-8 rounded-3xl border border-gray-200 sticky top-20 self-start">
-          <h2 className="text-3xl font-bold mb-8 text-[#276139] select-text">
-            Summary
-          </h2>
-          <div className="flex justify-between text-gray-700 mb-4 font-medium text-lg">
-            <span>Total Items</span>
-            <span>{cartCount}</span>
+        <aside className="w-full md:w-96 bg-white shadow-xl p-6 rounded-xl border border-gray-200 sticky top-20 self-start space-y-6">
+          <h2 className="text-3xl font-bold text-[#276139]">Order Summary</h2>
+
+          <div className="divide-y rounded-xl border border-gray-100 bg-white shadow-sm">
+            {cart.map((item) => (
+              <div
+                key={item.productId}
+                className="flex justify-between items-center p-4"
+              >
+                <div className="flex flex-col w-3/5">
+                  <p className="font-medium text-gray-800 text-sm truncate">
+                    {item.title}
+                  </p>
+                  <div className="text-xs text-gray-500">
+                    <span className="line-through mr-2">
+                      ₹{item.originalPrice?.toFixed(2)}
+                    </span>
+                    <span className="font-semibold text-gray-800">
+                      ₹{item.price.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+
+                <span className="w-1/5 text-sm text-gray-500 text-center">
+                  ×{item.quantity}
+                </span>
+
+                <span className="w-1/5 text-right font-medium text-gray-800 text-sm">
+                  ₹{(item.price * item.quantity).toFixed(2)}
+                </span>
+              </div>
+            ))}
+
+            <div className="flex justify-between p-4 font-semibold text-[#276139]">
+              <span>Total ({cartCount} items)</span>
+              <span>₹{totalPrice.toFixed(2)}</span>
+            </div>
           </div>
-          <div className="flex justify-between mb-10 text-gray-900 font-extrabold text-2xl">
-            <span>Total Price</span>
-            <span className="text-[#276139]">₹{totalPrice}</span>
-          </div>
+
           <button
             className="w-full py-4 rounded-xl bg-[#276139] hover:bg-[#1d4f2d] text-white font-semibold text-lg shadow-lg transition"
-            onClick={() => alert("Proceeding to checkout...")}
+            onClick={() => navigate("/checkout")}
           >
             Proceed to Checkout
           </button>
         </aside>
+
+
       </div>
 
       {/* Confirmation Modal */}

@@ -6,6 +6,7 @@ const AddressContext = createContext();
 
 export const AddressProvider = ({ children }) => {
   const [address, setAddress] = useState([]);
+  const [loggedIn, setLoggedIn] = useState(false);
   const [defaultAddress, setDefaultAddressInternal] = useState(null);
   const [addressFetched, setAddressFetched] = useState(false);
   const [showAddressModal, setShowAddressModal] = useState(false);
@@ -29,7 +30,7 @@ export const AddressProvider = ({ children }) => {
       const response = await axios.get(`${ADDRESS_API}`, header);
       const fetchedAddresses = response.data.addresses;
       setAddress(fetchedAddresses);
-      setAddressFetched(true);
+      setAddressFetched(!addressFetched);
 
       const savedId = localStorage.getItem("defaultAddressId");
       const matched = fetchedAddresses.find(addr => addr._id === savedId);
@@ -52,10 +53,10 @@ export const AddressProvider = ({ children }) => {
     setLoading(true);
     try {
       await axios.post(`${ADDRESS_API}`, newAddress, header);
-      toast.success('Address added successfully');
+      console.log('Address added successfully');
       await fetchAddresses();
     } catch (error) {
-      toast.error('Failed to add address');
+      console.log('Failed to add address');
     } finally {
       setLoading(false);
     }
@@ -69,9 +70,9 @@ export const AddressProvider = ({ children }) => {
       setAddress((prev) =>
         prev.map((addr) => addr.id === id ? response.data : addr)
       );
-      toast.success('Address updated successfully');
+      console.log('Address updated successfully');
     } catch (error) {
-      toast.error('Failed to update address');
+      console.log('Failed to update address');
     } finally {
       setLoading(false);
     }
@@ -89,9 +90,9 @@ export const AddressProvider = ({ children }) => {
         localStorage.removeItem("defaultAddressId");
       }
 
-      toast.success('Address deleted successfully');
+      console.log('Address deleted successfully');
     } catch (error) {
-      toast.error('Failed to delete address');
+      console.log('Failed to delete address');
     } finally {
       setLoading(false);
     }
@@ -114,11 +115,11 @@ export const AddressProvider = ({ children }) => {
     } else {
       setShowAddressModal(false);
     }
-  }, [address, addressFetched]);
+  }, [address]);
 
   useEffect(() => {
     fetchAddresses();
-  }, []);
+  }, [loggedIn]);
 
   return (
     <AddressContext.Provider
@@ -132,6 +133,8 @@ export const AddressProvider = ({ children }) => {
         addAddress,
         editAddress,
         deleteAddress,
+        loggedIn,
+        setLoggedIn,
       }}
     >
       {children}

@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useAddress } from "../Context/AddressContext";
 
 const CartContext = createContext();
 const CART_API = import.meta.env.VITE_CART_API;
@@ -9,7 +10,7 @@ const PRODUCT_API = import.meta.env.VITE_PRODUCTS_API;
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
   const [cartCount, setCartCount] = useState(0);
-  const [loggedIn, setLoggedIn] = useState(false);
+  const { loggedIn, setLoggedIn } = useAddress();
   const token = JSON.parse(localStorage.getItem("user"))?.token;
   const [stock, setStock] = useState(0);
   const [allProducts, setAllProducts] = useState([]);
@@ -84,17 +85,19 @@ export const CartProvider = ({ children }) => {
 
 
   const removeFromCart = async (id) => {
-    const updatedCart = cart.filter((item) => item.id !== id);
-    setCart(updatedCart);
-
+    const updatedCart = cart.filter((item) => item.productId !== id);
+    console.log(updatedCart);
     try {
-      await axios.delete(CART_API, {
+      let res = await axios.delete(CART_API, {
         ...axiosConfig,
         data: { productId: id },
       });
+      console.log(res);
+      
+          setCart(updatedCart);
     } catch (error) {
-      toast.error("Failed to remove from cart");
-      setCart(cart); // rollback
+      console.log("Failed to remove from cart");
+      setCart(cart);
     }
   };
 

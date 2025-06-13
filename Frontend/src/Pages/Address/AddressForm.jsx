@@ -200,7 +200,7 @@ const AddressForm = ({ address, setAddress, errors, setErrors, onSave, onCancel 
             autoComplete="off"
             required
             onFocus={() => {
-              if (address?.City.trim()) setShowCitySuggestions(true);
+              if (address?.City?.trim()) setShowCitySuggestions(true);
             }}
             onKeyDown={(e) => {
               handleCityKeyDown(e);
